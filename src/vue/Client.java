@@ -16,7 +16,7 @@ public class Client extends JFrame {
 		super("Titre");
 	    //"jdbc:oracle:thin:@madere:1521:info"
 		conn = new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");
-		PanelEtudiant panel = new PanelEtudiant();
+		PanelBibliothecaireEtudiant panel = new PanelBibliothecaireEtudiant();
 		setContentPane(panel);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
