@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Connexion {
-	Connection conn;
+	static Connection conn;
 	
 	public Connexion(String addresse, String username, String password) throws SQLException, ClassNotFoundException{
 		/*
@@ -17,11 +17,7 @@ public class Connexion {
 		conn = DriverManager.getConnection(addresse);
     }
 	
-	public Connection getCon() {
-		return conn;
-	}
-	
-	public ResultSet executeQuery(String query) throws SQLException {
+	public static ResultSet executeQuery(String query) throws SQLException {
 		try {
 			Statement stmt = conn.createStatement();
 	    	ResultSet rset = stmt.executeQuery(query);
@@ -32,7 +28,7 @@ public class Connexion {
 		return null;
 	}
 	
-	public void executeUpdate(String sql) throws SQLException {
+	public static void executeUpdate(String sql) throws SQLException {
 		try {
 			Statement stmt = conn.createStatement();
 	    	stmt.executeUpdate(sql);
@@ -41,7 +37,7 @@ public class Connexion {
 		}
 	}
 	
-	public void executeUpdate(String sql, String[] params) throws SQLException {
+	public static void executeUpdate(String sql, String[] params) throws SQLException {
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			for (int i = 1; i <= params.length; ++i) {

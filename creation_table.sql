@@ -139,3 +139,8 @@ INSERT INTO livre VALUES (97,'Tarpeia, les venins de Rome','Bouchard, Nicolas');
 INSERT INTO livre VALUES (98,'Les Vies multiples d''Amory Clay','Boyd, William');
 INSERT INTO livre VALUES (99,'A mains nues','Barbato, Paola');
 INSERT INTO livre VALUES (100,'Il était une ville','Reverdy, Thomas B.');
+
+INSERT INTO etu VALUES (0, "Tom", "Dupont", "mdp", "mail@mail.com");
+INSERT INTO etu VALUES (1, "Fabrice", "Dupond", "mdp", "mail@mail.com");
+INSERT INTO etu VALUES (2, "Kel", "Sunny", "mdp", "mail@mail.com");
+INSERT INTO etu VALUES (3, "Aubrey", "Mari", "mdp", "mail@mail.com");

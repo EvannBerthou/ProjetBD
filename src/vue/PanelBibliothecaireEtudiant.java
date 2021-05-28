@@ -1,27 +1,28 @@
 package vue;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListModel;
 
-public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {
+import modele.Connexion;
+import modele.Etudiant;
 
-    
+public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {    
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
     
     /**
@@ -48,13 +49,37 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         return panel;
     }
     
+    private Etudiant[] getEtudiants() {
+        ArrayList<Etudiant> etus = new ArrayList<Etudiant>();
+        ResultSet result = null;
+        try {
+            result = Connexion.executeQuery("SELECT nom,prenom,email FROM etu");
+            while (result.next()) {
+                String nom = result.getString(1);
+                String prenom = result.getString(2);
+                String email = result.getString(3);
+                etus.add(new Etudiant(nom, prenom, email));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return (Etudiant[]) etus.toArray(new Etudiant[etus.size()]);
+    }
+    
     public PanelBibliothecaireEtudiant() {
         setLayout(new BorderLayout(20, 20));
         JPanel listeEtudiants = new JPanel(new BorderLayout());
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
         // Panel WEST (liste des étudiants)
-        JList<String> listeEtudiats = new JList<String>(new String[] {"test1", "test2"});
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        Etudiant[] etus = getEtudiants();
+        for (Etudiant etu : etus) {
+            model.addElement(etu.toString());
+        }
+        JList<String> listeEtudiats = new JList<String>(model);
         JScrollPane scroll = new JScrollPane(listeEtudiats);
 
         listeEtudiants.add(JLabelWithButton("Liste étudiants", "letu"), BorderLayout.NORTH);
