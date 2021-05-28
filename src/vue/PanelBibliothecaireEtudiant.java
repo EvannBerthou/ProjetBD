@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 import modele.Connexion;
 import modele.Etudiant;
@@ -69,7 +72,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     public PanelBibliothecaireEtudiant() {
         setLayout(new BorderLayout(20, 20));
-        JPanel listeEtudiants = new JPanel(new BorderLayout());
+        JPanel panelListeEtudiants = new JPanel(new BorderLayout());
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
         // Panel WEST (liste des étudiants)
@@ -78,11 +81,20 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         for (Etudiant etu : etus) {
             model.addElement(etu.toString());
         }
-        JList<String> listeEtudiats = new JList<String>(model);
-        JScrollPane scroll = new JScrollPane(listeEtudiats);
+        JList<String> listeEtudiants = new JList<String>(model);
+        listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        listeEtudiants.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList)evt.getSource();
+                String selected = (String) list.getSelectedValue();
+                changerEtudiantSelectionne(Etudiant.getEtudiantByName(selected));
+            };
+        });
 
-        listeEtudiants.add(JLabelWithButton("Liste étudiants", "letu"), BorderLayout.NORTH);
-        listeEtudiants.add(scroll, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(listeEtudiants);
+        panelListeEtudiants.add(JLabelWithButton("Liste étudiants", "letu"), BorderLayout.NORTH);
+        panelListeEtudiants.add(scroll, BorderLayout.CENTER);
         
         // Panel CENTRE (informations de l'étudiants sélectionné)
         JPanel infos = new JPanel();
@@ -123,12 +135,12 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         panelInfoEtudiant.add(panel, BorderLayout.CENTER);
         panelInfoEtudiant.add(bouton, BorderLayout.SOUTH);
         
-        add(listeEtudiants, BorderLayout.WEST);
+        add(panelListeEtudiants, BorderLayout.WEST);
         add(panelInfoEtudiant, BorderLayout.CENTER);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {       
         String action = e.getActionCommand();
         switch (action) {
         case "letu": afficherPanelAjoutEtudiant(); break;
@@ -232,4 +244,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         popup.setBackground(java.awt.Color.red);
         popup.setSize(300, 150);
     } 
+    
+    private void changerEtudiantSelectionne(Etudiant etu) {
+        textFields.get("Nom").setText(etu.getNom());
+        textFields.get("Prénom").setText(etu.getPrenom());
+        textFields.get("Email").setText(etu.getEmail());
+    }
 }

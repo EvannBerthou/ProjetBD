@@ -28,6 +28,20 @@ public class Connexion {
 		return null;
 	}
 	
+	public static ResultSet executeQuery(String sql, String[] params) throws SQLException {
+	    try {
+	        PreparedStatement pstmt = conn.prepareStatement(sql);
+	        for (int i = 1; i <= params.length; ++i) {
+	            pstmt.setString(i, params[i - 1]);
+	        }
+	        ResultSet rset = pstmt.executeQuery();
+	        return rset;
+	    } catch (SQLException e) {
+	        System.out.println("Erreur dans l'execution de la requete: '" + sql + "' \n" + e.toString());
+	    }
+	    return null;
+	}
+	
 	public static void executeUpdate(String sql) throws SQLException {
 		try {
 			Statement stmt = conn.createStatement();
