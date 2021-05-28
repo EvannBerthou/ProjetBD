@@ -1,14 +1,20 @@
 package vue;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -25,10 +31,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
      */
     public JPanel textFieldWithName(String name) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel(name), BorderLayout.NORTH);
+        panel.add(new JLabel(name), BorderLayout.WEST);
         JTextField tf = new JTextField(10);
         textFields.put(name, tf);
-        panel.add(tf, BorderLayout.SOUTH);
+        panel.add(tf, BorderLayout.CENTER);
         return panel;
     }
     
@@ -102,12 +108,58 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         String action = e.getActionCommand();
         switch (action) {
         case "letu": System.out.println("letu"); break;
-        case "lemp": System.out.println("lemp"); break;
-        case "lres": System.out.println("lres"); break;
+        case "lemp": ajouterEtudiant(); break;
+        case "lres": ajouterEmprunt(); break;
         case "save": System.out.println("save"); break;
         case "suppr": System.out.println("suppr"); break;
         }
-        
     }
     
+    public void ajouterEmprunt() {
+        JDialog popup = new JDialog();
+        
+        popup.setTitle("Ajout d'un emprunt pour " + "Nom " + "Prénom");
+
+        popup.setLayout(new BorderLayout());
+        
+        JPanel panelNord = new JPanel();
+        panelNord.add(new JLabel("Titre"));
+        panelNord.add(new JTextField(20));
+        panelNord.add(new JButton("Rechercher"));
+        
+
+        JList<String> livres = new JList<String>(new String[] {"test1 - auteur 1", "test2 - auteur 2"});
+        JScrollPane scrollLivres = new JScrollPane(livres);
+        
+        popup.add(panelNord, BorderLayout.NORTH);
+        popup.add(scrollLivres, BorderLayout.CENTER);
+        popup.add(new JButton("Ajouter"), BorderLayout.SOUTH);
+        
+        popup.setVisible(true);
+        popup.setBackground(java.awt.Color.red);
+        popup.setSize(500, 400);
+    }
+    
+    public void ajouterEtudiant() {
+        JDialog popup = new JDialog();
+        
+        popup.setTitle("Ajout d'un étudiant");
+
+        popup.setLayout(new GridLayout(5,2));
+        popup.add(new JLabel("Nom"));
+        popup.add(new JTextField(10));
+        popup.add(new JLabel("Prénom"));
+        popup.add(new JTextField(10));
+        popup.add(new JLabel("Email"));
+        popup.add(new JTextField(10));
+        popup.add(new JLabel("Mot de passe"));
+        popup.add(new JTextField(10));
+
+        popup.add(new JButton("Annuler"));
+        popup.add(new JButton("Ajouter"));
+        
+        popup.setVisible(true);
+        popup.setBackground(java.awt.Color.red);
+        popup.setSize(300, 150);
+    } 
 }
