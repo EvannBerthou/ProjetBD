@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS livre;
 DROP TABLE IF EXISTS etu;
 
 create table etu(
-	id_et int primary key not null,
+	id_et integer primary key autoincrement not null , -- TODO: A CHANGER AVANT DE RENDRE
 	nom varchar(255) not null,
 	prenom varchar(255) not null,
 	mdp varchar(255) not null,

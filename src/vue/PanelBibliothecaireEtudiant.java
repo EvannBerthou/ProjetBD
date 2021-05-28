@@ -17,7 +17,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 
 import modele.Connexion;
 import modele.Etudiant;
@@ -132,18 +131,18 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         switch (action) {
-        case "letu": System.out.println("letu"); break;
-        case "lemp": ajouterEtudiant(); break;
-        case "lres": ajouterEmprunt(); break;
+        case "letu": afficherPanelAjoutEtudiant(); break;
+        case "lemp": afficherPanelAjoutLivre("emprunt"); break;
+        case "lres": afficherPanelAjoutLivre("reservation"); break;
         case "save": System.out.println("save"); break;
         case "suppr": System.out.println("suppr"); break;
         }
     }
     
-    public void ajouterEmprunt() {
+    public void afficherPanelAjoutLivre(String type) {
         JDialog popup = new JDialog();
         
-        popup.setTitle("Ajout d'un emprunt pour " + "Nom " + "Prénom");
+        popup.setTitle("Ajout " + type + " pour " + "Nom " + "Prénom");
 
         popup.setLayout(new BorderLayout());
         
@@ -158,30 +157,76 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         
         popup.add(panelNord, BorderLayout.NORTH);
         popup.add(scrollLivres, BorderLayout.CENTER);
-        popup.add(new JButton("Ajouter"), BorderLayout.SOUTH);
+        JButton ajoutBouton = new JButton("Ajouter");
+        popup.add(ajoutBouton, BorderLayout.SOUTH);
         
         popup.setVisible(true);
         popup.setBackground(java.awt.Color.red);
         popup.setSize(500, 400);
     }
     
-    public void ajouterEtudiant() {
+    private void ajouterEtudiant(Etudiant etu) {
+        System.out.println("Ajout de " + etu.toString());
+        try {
+            Connexion.executeUpdate("INSERT INTO etu(nom,prenom,email,mdp) VALUES (?, ?, ?, ?)",
+                    new String[] {
+                            etu.getNom(), etu.getPrenom(), etu.getEmail(), etu.getMdp()
+                    }
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void afficherPanelAjoutEtudiant() {
         JDialog popup = new JDialog();
         
         popup.setTitle("Ajout d'un étudiant");
 
         popup.setLayout(new GridLayout(5,2));
         popup.add(new JLabel("Nom"));
-        popup.add(new JTextField(10));
+        JTextField tfNom = new JTextField(10);
+        popup.add(tfNom);
+        
         popup.add(new JLabel("Prénom"));
-        popup.add(new JTextField(10));
+        JTextField tfPrenom = new JTextField(10);
+        popup.add(tfPrenom);
+        
         popup.add(new JLabel("Email"));
-        popup.add(new JTextField(10));
+        JTextField tfMail = new JTextField(10);
+        popup.add(tfMail);
+        
         popup.add(new JLabel("Mot de passe"));
-        popup.add(new JTextField(10));
+        JTextField tfMdp = new JTextField(10);
+        popup.add(tfMdp);
 
-        popup.add(new JButton("Annuler"));
-        popup.add(new JButton("Ajouter"));
+        
+        JButton annulerBouton = new JButton("Annuler");
+        annulerBouton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                popup.dispose();
+            }
+        });
+        
+        JButton ajouterBouton = new JButton("Ajouter");
+        ajouterBouton.addActionListener(new ActionListener() {
+            @Override
+            //TODO: Vérifier que les textfields ne sont pas vide
+            public void actionPerformed(ActionEvent e) {
+                String nom = tfNom.getText();
+                String prenom = tfPrenom.getText();
+                String mail = tfMail.getText();
+                String mdp = tfMdp.getText();
+                Etudiant etu = new Etudiant(nom, prenom, mail, mdp);
+                //TODO: Afficher un message de succès ou d'erreur
+                ajouterEtudiant(etu);
+            }
+        });
+        
+       
+        popup.add(annulerBouton);
+        popup.add(ajouterBouton); 
         
         popup.setVisible(true);
         popup.setBackground(java.awt.Color.red);
