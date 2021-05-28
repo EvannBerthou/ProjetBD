@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 
 import modele.Connexion;
 
@@ -16,11 +17,17 @@ public class Client extends JFrame {
 		super("Titre");
 	    //"jdbc:oracle:thin:@madere:1521:info"
 		conn = new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");
-		PanelBibliothecaireEtudiant panel = new PanelBibliothecaireEtudiant();
-		setContentPane(panel);
+
+		PanelBibliothecaireEtudiant panelEtudiant = new PanelBibliothecaireEtudiant();
+		PanelLivres panelLivres = new PanelLivres();
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Etudiant", null, panelEtudiant, "Does nothing");
+        tabbedPane.addTab("Livres", null, panelLivres, "Does nothing");
+        
+		setContentPane(tabbedPane);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		setBackground(Color.red);
         setSize(1000, 600);
 	}
 	
