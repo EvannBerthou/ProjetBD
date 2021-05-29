@@ -6,32 +6,34 @@ import java.util.ArrayList;
 
 import modele.Connexion;
 import modele.Etudiant;
+import modele.Livre;
 
 public class LivresEtudiants {
 
-    public static String[] getLivresEmpruntEtudiants(Etudiant etu) {
+    public static Livre[] getLivresEmpruntEtudiants(Etudiant etu) {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT titre,auteur FROM exemplaire, livre, etu, emprunt " +
+                    "SELECT titre,auteur, exemplaire.id_ex FROM exemplaire, livre, etu, emprunt " +
                     "WHERE emprunt.id_ex = exemplaire.id_ex AND exemplaire.id_liv = livre.id_liv " 
                             + "AND emprunt.id_et = etu.id_et AND etu.email = ?", 
                     new String[] {
                             etu.getEmail()
                     });
-            ArrayList<String> livres = new ArrayList<String>();
+            ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                livres.add(rset.getString(1) + " - " + rset.getString(2));
+                Livre livre = new Livre(rset.getString(1), rset.getString(2), rset.getInt(3));
+                livres.add(livre);
             }
             
-            return (String[]) livres.toArray(new String[livres.size()]);
+            return (Livre[]) livres.toArray(new Livre[livres.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new String[0];
+        return new Livre[0];
     }
     
-    public static String[] getLivresReserveEtudiants(Etudiant etu) {
+    public static Livre[] getLivresReserveEtudiants(Etudiant etu) {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
@@ -40,21 +42,21 @@ public class LivresEtudiants {
                     new String[] {
                             etu.getEmail()
                     });
-            ArrayList<String> livres = new ArrayList<String>();
+            ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                livres.add(rset.getString(1) + " - " + rset.getString(2));
+                Livre livre = new Livre(rset.getString(1), rset.getString(2), -1);
+                livres.add(livre);
             }
             
-            return (String[]) livres.toArray(new String[livres.size()]);
+            return (Livre[]) livres.toArray(new Livre[livres.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new String[0];
+        return new Livre[0];
     }
 
     public static void EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
         try {
-            System.out.println(nomLivre + " " + auteurLivre);
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
                     + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre=? AND auteur=?)"
@@ -69,7 +71,6 @@ public class LivresEtudiants {
     
     public static void ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
         try {
-            System.out.println(nomLivre + " " + auteurLivre);
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
                     + "(SELECT id_liv FROM livre WHERE titre=? AND auteur=?)"
@@ -77,6 +78,29 @@ public class LivresEtudiants {
                     new String[] {
                             etu.getEmail(),
                             nomLivre, auteurLivre
+                    });
+        } catch (SQLException e) {
+        }
+    }
+    
+    public static void supprimerEmprunt(Etudiant etu, int exemplaire) {
+        try {
+            Connexion.executeUpdate("DELETE FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) AND id_ex = ?",
+                    new String[] {
+                            etu.getEmail(),
+                            String.valueOf(exemplaire)
+                    });
+        } catch (SQLException e) {
+        }
+    }
+    
+    public static void supprimerReservation(Etudiant etu, String titre, String auteur) {
+        try {
+            Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) "
+                    + "AND id_liv = (SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?)",
+                    new String[] {
+                            etu.getEmail(),
+                            titre, auteur
                     });
         } catch (SQLException e) {
         }

@@ -26,6 +26,7 @@ import javax.swing.ScrollPaneConstants;
 
 import modele.Connexion;
 import modele.Etudiant;
+import modele.Livre;
 import modele.ModeleTableLivres;
 import utils.LivresEtudiants;
 
@@ -33,8 +34,8 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
     Etudiant etuSelectionne;
     JList<String> listeEtudiants;
-    JList<String> listeEmprunts;
-    JList<String> listeReservations;
+    JList<Livre> listeEmprunts;
+    JList<Livre> listeReservations;
     /**
      * Permet de créer un couple JTextField avec un nom au dessus
      * @param name Le texte a afficher au dessus du JLabel
@@ -122,16 +123,24 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         JPanel panel = new JPanel(new GridLayout(1,2, 20, 20));
 
         JPanel empruntsPanel = new JPanel(new BorderLayout());
-        listeEmprunts = new JList<String>();
+        listeEmprunts = new JList<Livre>();
         JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
         empruntsPanel.add(JLabelWithButton("Livres empruntés", "lemp"), BorderLayout.NORTH);
         empruntsPanel.add(scrollEmprunts, BorderLayout.CENTER);
+        JButton supprimerEmpruntBouton = new JButton("Supprimer");
+        supprimerEmpruntBouton.setActionCommand("supprimer-emprunt");
+        supprimerEmpruntBouton.addActionListener(this);
+        empruntsPanel.add(supprimerEmpruntBouton, BorderLayout.SOUTH);
         
         JPanel reservationPanel = new JPanel(new BorderLayout());
-        listeReservations = new JList<String>();
+        listeReservations = new JList<Livre>();
         JScrollPane scrollReservations = new JScrollPane(listeReservations);
         reservationPanel.add(JLabelWithButton("Livres réservés", "lres"), BorderLayout.NORTH);
         reservationPanel.add(scrollReservations, BorderLayout.CENTER);
+        JButton supprimerReservBouton = new JButton("Supprimer");
+        supprimerReservBouton.setActionCommand("supprimer-reservation");
+        supprimerReservBouton.addActionListener(this);
+        reservationPanel.add(supprimerReservBouton, BorderLayout.SOUTH);
 
         panel.add(empruntsPanel);
         panel.add(reservationPanel);
@@ -158,6 +167,8 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         case "lres": afficherPanelAjoutLivre("reservation"); break;
         case "save": changerInformationsEtudiant(); break;
         case "suppr": System.out.println("suppr"); break;
+        case "supprimer-emprunt": supprimerEmprunt(); break;
+        case "supprimer-reservation": supprimerReservation(); break;
         }
     }
     
@@ -197,7 +208,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
                 } else if (type.equals("reservation")) {
                     LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur);
                 }
-                changerEtudiantSelectionne(etuSelectionne);
+                mettreAJoutEmpruntsReservations();
                 popup.dispose();
             }
         });
@@ -288,20 +299,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         textFields.get("Prénom").setText(etu.getPrenom());
         textFields.get("Email").setText(etu.getEmail());
         etuSelectionne = etu;
-        String[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etu);
-        String[] Reservations = LivresEtudiants.getLivresReserveEtudiants(etu);
-
-        DefaultListModel<String> model = new DefaultListModel<String>();
-        for (String emprunt : emprunts) {
-            model.addElement(emprunt);
-        }
-        listeEmprunts.setModel(model);
-        
-        model = new DefaultListModel<String>();
-        for (String reserv : Reservations) {
-            model.addElement(reserv);
-        }
-        listeReservations.setModel(model);
+        mettreAJoutEmpruntsReservations();
     }
     
     private void changerInformationsEtudiant() {
@@ -328,6 +326,23 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
+    private void mettreAJoutEmpruntsReservations() {
+        Livre[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etuSelectionne);
+        Livre[] reservations = LivresEtudiants.getLivresReserveEtudiants(etuSelectionne);
+
+        DefaultListModel<Livre> model = new DefaultListModel<Livre>();
+        for (Livre emprunt : emprunts) {
+            model.addElement(emprunt);
+        }
+        listeEmprunts.setModel(model);
+        
+        model = new DefaultListModel<Livre>();
+        for (Livre reserv : reservations) {
+            model.addElement(reserv);
+        }
+        listeReservations.setModel(model);
+    }
+    
     private void mettreAJourListeEtudiants() {
         int index = listeEtudiants.getSelectedIndex();
         DefaultListModel<String> model = new DefaultListModel<String>();
@@ -337,5 +352,17 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
         listeEtudiants.setModel(model);
         listeEtudiants.setSelectedIndex(index);
+    }
+    
+    private void supprimerEmprunt() {
+        Livre livre = listeEmprunts.getSelectedValue();
+        LivresEtudiants.supprimerEmprunt(etuSelectionne, livre.getExemplaire());
+        mettreAJoutEmpruntsReservations();
+    }
+    
+    private void supprimerReservation() {
+        Livre livre = listeReservations.getSelectedValue();
+        LivresEtudiants.supprimerReservation(etuSelectionne, livre.getTitre(), livre.getAuteur());
+        mettreAJoutEmpruntsReservations();
     }
 }
