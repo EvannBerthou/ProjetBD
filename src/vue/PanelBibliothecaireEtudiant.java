@@ -186,6 +186,21 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         popup.add(panelNord, BorderLayout.NORTH);
         popup.add(scrollPane, BorderLayout.CENTER);
         JButton ajoutBouton = new JButton("Ajouter");
+        ajoutBouton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tableLivres.getSelectedRow();
+                String titre = (String) tableLivres.getValueAt(row, 0);
+                String auteur = (String) tableLivres.getValueAt(row, 1);
+                if (type.equals("emprunt")) {
+                    LivresEtudiants.EmprunterLivre(etuSelectionne, titre, auteur);
+                } else if (type.equals("reservation")) {
+                    LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur);
+                }
+                changerEtudiantSelectionne(etuSelectionne);
+                popup.dispose();
+            }
+        });
         popup.add(ajoutBouton, BorderLayout.SOUTH);
         
         popup.setVisible(true);

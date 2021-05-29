@@ -51,5 +51,34 @@ public class LivresEtudiants {
         }
         return new String[0];
     }
+
+    public static void EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+        try {
+            System.out.println(nomLivre + " " + auteurLivre);
+            Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
+                    + "(SELECT id_et FROM etu WHERE email=?), "
+                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre=? AND auteur=?)"
+                    + ")",  
+                    new String[] {
+                            etu.getEmail(),
+                            nomLivre, auteurLivre
+                    });
+        } catch (SQLException e) {
+        }
+    }
     
+    public static void ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+        try {
+            System.out.println(nomLivre + " " + auteurLivre);
+            Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
+                    + "(SELECT id_et FROM etu WHERE email=?), "
+                    + "(SELECT id_liv FROM livre WHERE titre=? AND auteur=?)"
+                    + ")",  
+                    new String[] {
+                            etu.getEmail(),
+                            nomLivre, auteurLivre
+                    });
+        } catch (SQLException e) {
+        }
+    }
 }
