@@ -1,6 +1,8 @@
 package vue;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +14,7 @@ import modele.*;
  * @author jules
  *
  */
-public class PanelLivres extends JPanel{
+public class PanelLivres extends JPanel implements ActionListener{
 	
 	/**
 	 * Le constructeur de la classe PanelLivres
@@ -47,6 +49,8 @@ public class PanelLivres extends JPanel{
 		cRecherche.anchor = GridBagConstraints.WEST;
 		cRecherche.weightx = 1;
 		cRecherche.weighty = 1;
+		titreRecherche.setActionCommand("rchrTitre");
+		titreRecherche.addActionListener(this);
 		recherche.add(titreRecherche,cRecherche);
 		
 		JLabel auteur = new JLabel("Auteur ");
@@ -71,6 +75,8 @@ public class PanelLivres extends JPanel{
 		cRecherche.anchor = GridBagConstraints.WEST;
 		cRecherche.weightx = 1;
 		cRecherche.weighty = 1;
+		auteurRecherche.setActionCommand("rchrAuteur");
+		auteurRecherche.addActionListener(this);
 		recherche.add(auteurRecherche,cRecherche);
 		
 		JButton livreRetard = new JButton("Livres en retard");
@@ -80,6 +86,8 @@ public class PanelLivres extends JPanel{
 		cRecherche.weightx = 1;
 		cRecherche.weighty = 1;
 		livreRetard.setPreferredSize(new Dimension(150, 30));
+		livreRetard.setActionCommand("lvrRetard");
+		livreRetard.addActionListener(this);
 		recherche.add(livreRetard,cRecherche);
 		
 		JButton livreAjout = new JButton("Ajouter un livre");
@@ -89,6 +97,8 @@ public class PanelLivres extends JPanel{
 		cRecherche.weightx = 1;
 		cRecherche.weighty = 1;
 		livreAjout.setPreferredSize(new Dimension(150, 30));
+		livreAjout.setActionCommand("ajLivre");
+		livreAjout.addActionListener(this);
 		recherche.add(livreAjout,cRecherche);
 		
 		recherche.setBorder(new EmptyBorder(10, 10, 0, 10));
@@ -98,9 +108,7 @@ public class PanelLivres extends JPanel{
 		
 		JPanel listeLivre = new JPanel(new BorderLayout());
 		
-		ModeleTableLivres modele = new ModeleTableLivres();
-		
-		JTable tableLivres = new JTable(modele);
+		JTable tableLivres = new JTable(new ModeleTableLivres());
 		tableLivres.setRowHeight(25);
 		
 		JScrollPane scrollPane = new JScrollPane(tableLivres,
@@ -110,5 +118,38 @@ public class PanelLivres extends JPanel{
 		listeLivre.add(scrollPane);
 		
 		add(listeLivre,BorderLayout.CENTER);
+	}
+	
+	public void panelAjoutLivres(){
+		PopupAjoutLivre popup = new PopupAjoutLivre();
+	}
+	
+	public void panelLivreRetard(){
+		JDialog popup = new JDialog();
+		popup.setTitle("Ajouter un livres, ou des exemplaires");
+		popup.setLayout(new BorderLayout());
+		
+		JTable tableLivres = new JTable(new ModeleTableRetard());
+		tableLivres.setRowHeight(25);
+		
+		JScrollPane scrollPane = new JScrollPane(tableLivres,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		popup.add(scrollPane,BorderLayout.CENTER);
+		
+		popup.setVisible(true);
+        popup.setSize(500, 400);
+	}
+	
+	@Override
+    public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+		switch (action) {
+		case "rchrTitre": break;
+		case "rchrAuteur": break;
+		case "lvrRetard": panelLivreRetard(); break;
+		case "ajLivre":panelAjoutLivres(); break;
+		}
 	}
 }
