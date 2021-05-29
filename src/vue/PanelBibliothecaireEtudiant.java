@@ -33,7 +33,7 @@ import utils.LivresEtudiants;
 public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {    
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
     Etudiant etuSelectionne;
-    JList<String> listeEtudiants;
+    JList<Etudiant> listeEtudiants;
     JList<Livre> listeEmprunts;
     JList<Livre> listeReservations;
     /**
@@ -85,7 +85,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
         // Panel WEST (liste des étudiants)
-        listeEtudiants = new JList<String>();
+        listeEtudiants = new JList<Etudiant>();
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         mettreAJourListeEtudiants();
@@ -99,9 +99,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         
         listeEtudiants.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                JList list = (JList)evt.getSource();
-                String selected = (String) list.getSelectedValue();
-                changerEtudiantSelectionne(Etudiant.getEtudiantByName(selected));
+                JList<Etudiant> list = (JList<Etudiant>)evt.getSource();
+                Etudiant selected = (Etudiant) list.getSelectedValue();
+                changerEtudiantSelectionne(selected);
             };
         });
 
@@ -345,10 +345,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private void mettreAJourListeEtudiants() {
         int index = listeEtudiants.getSelectedIndex();
-        DefaultListModel<String> model = new DefaultListModel<String>();
+        DefaultListModel<Etudiant> model = new DefaultListModel<Etudiant>();
         Etudiant[] etus = getEtudiants();
         for (Etudiant etu : etus) {
-            model.addElement(etu.toString());
+            model.addElement(etu);
         }
         listeEtudiants.setModel(model);
         listeEtudiants.setSelectedIndex(index);
