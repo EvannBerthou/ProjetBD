@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS etu;
 
 create table etu(
 	id_et integer primary key autoincrement not null , -- TODO: A CHANGER AVANT DE RENDRE
-	nom varchar(255) not null,
 	prenom varchar(255) not null,
+	nom varchar(255) not null,
 	mdp varchar(255) not null,
 	email varchar(255) not null unique CHECK(email like '%@%.%')
 );
@@ -25,9 +25,9 @@ create table exemplaire (
 
 create table reserv (
 	id_et int references etu(id_et) not null,
-	date_res date not null,
+	date_res date default sysdate not null,
 	id_liv int references livre(id_liv) not null,
-	date_fin_res date not null,
+	date_fin_res date default sysdate not null,
 	primary key (id_et,id_liv,date_res)
 );
 
@@ -139,8 +139,18 @@ INSERT INTO livre VALUES (97,'Tarpeia, les venins de Rome','Bouchard, Nicolas');
 INSERT INTO livre VALUES (98,'Les Vies multiples d''Amory Clay','Boyd, William');
 INSERT INTO livre VALUES (99,'A mains nues','Barbato, Paola');
 INSERT INTO livre VALUES (100,'Il était une ville','Reverdy, Thomas B.');
+INSERT INTO livre VALUES (101,'Titre1','Auteur1');
 
 INSERT INTO etu VALUES (0, "Tom", "Dupont", "mdp", "mail1@mail.com");
 INSERT INTO etu VALUES (1, "Fabrice", "Dupond", "mdp", "mail2@mail.com");
 INSERT INTO etu VALUES (2, "Kel", "Sunny", "mdp", "mail3@mail.com");
 INSERT INTO etu VALUES (3, "Aubrey", "Mari", "mdp", "mail4@mail.com");
+
+INSERT INTO exemplaire VALUES (1, 1);
+INSERT INTO exemplaire VALUES (2, 2);
+INSERT INTO exemplaire VALUES (3, 2);
+INSERT INTO exemplaire VALUES (4, 101);
+
+INSERT INTO emprunt (id_et, id_ex) VALUES (0, 1);
+INSERT INTO emprunt (id_et, id_ex) VALUES (0, 2);
+INSERT INTO emprunt (id_et, id_ex) VALUES (1, 3);

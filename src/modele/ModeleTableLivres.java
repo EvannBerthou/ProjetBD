@@ -13,6 +13,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 	/**
 	 * Constructeur de la classe
 	 */
+	//TODO: Faire en sorte que l'on puisse donner la liste des livres en arguments
 	public ModeleTableLivres() {
 		setColumnCount(nCol);
 		setRowCount(nRow);

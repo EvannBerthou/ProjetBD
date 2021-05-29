@@ -27,11 +27,14 @@ import javax.swing.ScrollPaneConstants;
 import modele.Connexion;
 import modele.Etudiant;
 import modele.ModeleTableLivres;
+import utils.LivresEtudiants;
 
 public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {    
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
     Etudiant etuSelectionne;
     JList<String> listeEtudiants;
+    JList<String> listeEmprunts;
+    JList<String> listeReservations;
     /**
      * Permet de créer un couple JTextField avec un nom au dessus
      * @param name Le texte a afficher au dessus du JLabel
@@ -81,7 +84,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
         // Panel WEST (liste des étudiants)
-
         listeEtudiants = new JList<String>();
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
@@ -119,17 +121,15 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         
         JPanel panel = new JPanel(new GridLayout(1,2, 20, 20));
 
-        //TODO: Charger les livres empruntés depuis la BD
         JPanel empruntsPanel = new JPanel(new BorderLayout());
-        JList<String> emprunts = new JList<String>(new String[] {"test1", "test2"});
-        JScrollPane scrollEmprunts = new JScrollPane(emprunts);
+        listeEmprunts = new JList<String>();
+        JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
         empruntsPanel.add(JLabelWithButton("Livres empruntés", "lemp"), BorderLayout.NORTH);
         empruntsPanel.add(scrollEmprunts, BorderLayout.CENTER);
         
-        //TODO: Charger les livres réservés depuis la BD
         JPanel reservationPanel = new JPanel(new BorderLayout());
-        JList<String> reservations = new JList<String>(new String[] {"test1", "test2"});
-        JScrollPane scrollReservations = new JScrollPane(reservations);
+        listeReservations = new JList<String>();
+        JScrollPane scrollReservations = new JScrollPane(listeReservations);
         reservationPanel.add(JLabelWithButton("Livres réservés", "lres"), BorderLayout.NORTH);
         reservationPanel.add(scrollReservations, BorderLayout.CENTER);
 
@@ -186,6 +186,21 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         popup.add(panelNord, BorderLayout.NORTH);
         popup.add(scrollPane, BorderLayout.CENTER);
         JButton ajoutBouton = new JButton("Ajouter");
+        ajoutBouton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tableLivres.getSelectedRow();
+                String titre = (String) tableLivres.getValueAt(row, 0);
+                String auteur = (String) tableLivres.getValueAt(row, 1);
+                if (type.equals("emprunt")) {
+                    LivresEtudiants.EmprunterLivre(etuSelectionne, titre, auteur);
+                } else if (type.equals("reservation")) {
+                    LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur);
+                }
+                changerEtudiantSelectionne(etuSelectionne);
+                popup.dispose();
+            }
+        });
         popup.add(ajoutBouton, BorderLayout.SOUTH);
         
         popup.setVisible(true);
@@ -273,6 +288,20 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         textFields.get("Prénom").setText(etu.getPrenom());
         textFields.get("Email").setText(etu.getEmail());
         etuSelectionne = etu;
+        String[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etu);
+        String[] Reservations = LivresEtudiants.getLivresReserveEtudiants(etu);
+
+        DefaultListModel<String> model = new DefaultListModel<String>();
+        for (String emprunt : emprunts) {
+            model.addElement(emprunt);
+        }
+        listeEmprunts.setModel(model);
+        
+        model = new DefaultListModel<String>();
+        for (String reserv : Reservations) {
+            model.addElement(reserv);
+        }
+        listeReservations.setModel(model);
     }
     
     private void changerInformationsEtudiant() {
