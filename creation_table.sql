@@ -6,8 +6,8 @@ DROP TABLE IF EXISTS etu;
 
 create table etu(
 	id_et integer primary key autoincrement not null , -- TODO: A CHANGER AVANT DE RENDRE
-	nom varchar(255) not null,
 	prenom varchar(255) not null,
+	nom varchar(255) not null,
 	mdp varchar(255) not null,
 	email varchar(255) not null unique CHECK(email like '%@%.%')
 );
@@ -144,3 +144,11 @@ INSERT INTO etu VALUES (0, "Tom", "Dupont", "mdp", "mail1@mail.com");
 INSERT INTO etu VALUES (1, "Fabrice", "Dupond", "mdp", "mail2@mail.com");
 INSERT INTO etu VALUES (2, "Kel", "Sunny", "mdp", "mail3@mail.com");
 INSERT INTO etu VALUES (3, "Aubrey", "Mari", "mdp", "mail4@mail.com");
+
+INSERT INTO exemplaire VALUES (1, 1);
+INSERT INTO exemplaire VALUES (2, 2);
+INSERT INTO exemplaire VALUES (3, 2);
+
+INSERT INTO emprunt (id_et, id_ex) VALUES (0, 1);
+INSERT INTO emprunt (id_et, id_ex) VALUES (0, 2);
+INSERT INTO emprunt (id_et, id_ex) VALUES (1, 3);
