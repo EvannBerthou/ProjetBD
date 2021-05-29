@@ -18,11 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 
 import modele.Connexion;
 import modele.Etudiant;
+import modele.ModeleTableLivres;
 
 public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {    
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
@@ -170,11 +173,17 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         panelNord.add(new JButton("Rechercher"));
         
 
-        JList<String> livres = new JList<String>(new String[] {"test1 - auteur 1", "test2 - auteur 2"});
-        JScrollPane scrollLivres = new JScrollPane(livres);
+        JTable tableLivres = new JTable(new ModeleTableLivres());
+        tableLivres.setRowHeight(25);
+        tableLivres.setAutoCreateRowSorter(true);
+        
+        JScrollPane scrollPane = new JScrollPane(tableLivres,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         
         popup.add(panelNord, BorderLayout.NORTH);
-        popup.add(scrollLivres, BorderLayout.CENTER);
+        popup.add(scrollPane, BorderLayout.CENTER);
         JButton ajoutBouton = new JButton("Ajouter");
         popup.add(ajoutBouton, BorderLayout.SOUTH);
         

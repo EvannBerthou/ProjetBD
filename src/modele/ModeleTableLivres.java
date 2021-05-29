@@ -1,7 +1,7 @@
 package modele;
 
 import javax.swing.table.*;
-/** Classe pour définir le style de la table du panelLivres
+/** Classe pour dï¿½finir le style de la table du panelLivres
  * 
  * @author jules
  *
@@ -27,7 +27,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 		setColumnIdentifiers(colName);
 	}
 	
-	/** Methode pour changer toute les lignes, chaque liste doivent faire la même tailles, sinon les éléments de trop ne seront pas afficher
+	/** Methode pour changer toute les lignes, chaque liste doivent faire la mï¿½me tailles, sinon les ï¿½lï¿½ments de trop ne seront pas afficher
 	 * 
 	 * @param parTitres Liste des titres
 	 * @param parAuteurs Listes des auteurs
@@ -50,9 +50,9 @@ public class ModeleTableLivres extends DefaultTableModel{
 	}
 	
 	/**
-	 * Methode pour rendre les cellules inéditable
+	 * Methode pour rendre les cellules inï¿½ditable
 	 */
 	public boolean isCellEditable(int row, int column) {
 	       return false;
-	    }
+	}
 }
