@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -192,7 +193,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         popup.setSize(500, 400);
     }
     
-    private void ajouterEtudiant(Etudiant etu) {
+    private boolean ajouterEtudiant(Etudiant etu) {
         System.out.println("Ajout de " + etu.toString());
         try {
             Connexion.executeUpdate("INSERT INTO etu(nom,prenom,email,mdp) VALUES (?, ?, ?, ?)",
@@ -200,8 +201,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
                             etu.getNom(), etu.getPrenom(), etu.getEmail(), etu.getMdp()
                     }
             );
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            return false;
         }
     }
     
@@ -247,7 +249,13 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
                 String mdp = tfMdp.getText();
                 Etudiant etu = new Etudiant(nom, prenom, mail, mdp);
                 //TODO: Afficher un message de succès ou d'erreur
-                ajouterEtudiant(etu);
+                if (ajouterEtudiant(etu)) {
+                    JOptionPane.showMessageDialog(null, "Etudiant " + nom + " " + prenom + " ajouté.", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                    popup.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Erreur dans l'ajout de l'étudiant.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                }
+                mettreAJourListeEtudiants();
             }
         });
         

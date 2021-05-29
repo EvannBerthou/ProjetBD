@@ -64,6 +64,7 @@ public class Connexion {
 			pstmt.execute();
 		} catch (SQLException e) {
 			System.out.println("Erreur dans l'execution de la requete: '" + sql + "' \n" + e.toString());
+			throw e;
 		}
 	}
 }
