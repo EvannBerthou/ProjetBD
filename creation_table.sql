@@ -14,8 +14,8 @@ create table etu(
 
 create table livre (
 	id_liv int primary key not null,
-	auteur varchar(255) not null,
-	titre varchar(255) not null
+	titre varchar(255) not null,
+	auteur varchar(255) not null
 );
 
 create table exemplaire (
