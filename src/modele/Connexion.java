@@ -34,6 +34,7 @@ public class Connexion {
 	        for (int i = 1; i <= params.length; ++i) {
 	            pstmt.setString(i, params[i - 1]);
 	        }
+	        
 	        ResultSet rset = pstmt.executeQuery();
 	        return rset;
 	    } catch (SQLException e) {

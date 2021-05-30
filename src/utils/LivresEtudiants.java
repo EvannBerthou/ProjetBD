@@ -69,7 +69,6 @@ public class LivresEtudiants {
     
     public static boolean EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
         int livresEmpruntes = nbLivreEmprunte(etu);
-        System.out.println(livresEmpruntes);
         if (livresEmpruntes >= 5) {
             return false;
         }
@@ -77,7 +76,8 @@ public class LivresEtudiants {
         try {
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre = ? AND auteur = ?)"
+                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre = ? AND auteur = ? "
+                    + "AND id_ex NOT IN (SELECT ex.id_ex FROM exemplaire ex, emprunt em WHERE ex.id_ex = em.id_ex))"
                     + ")",  
                     new String[] {
                             etu.getEmail(),
@@ -102,7 +102,6 @@ public class LivresEtudiants {
     
     public static boolean ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
         int livresEmpruntes = nbLivreReserve(etu);
-        System.out.println(livresEmpruntes);
         if (livresEmpruntes >= 5) {
             return false;
         }
@@ -110,7 +109,8 @@ public class LivresEtudiants {
         try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_liv FROM livre WHERE titre=? AND auteur=?)"
+                    + "(SELECT id_liv FROM livre WHERE titre=? AND auteur=? "
+                    + "AND id_liv NOT IN (SELECT id_ex FROM exemplaire ex, emprunt em WHERE ex.id_ex = em.id_ex)"
                     + ")",  
                     new String[] {
                             etu.getEmail(),

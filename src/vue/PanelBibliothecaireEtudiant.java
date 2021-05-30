@@ -143,15 +143,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
 
         panel.add(empruntsPanel);
         panel.add(reservationPanel);
-        
-        // Bouton au sud
-        JButton bouton = new JButton("Supprimer l'étudiant");
-        bouton.addActionListener(this);
-        bouton.setActionCommand("suppr");
 
         panelInfoEtudiant.add(infos, BorderLayout.NORTH);   
         panelInfoEtudiant.add(panel, BorderLayout.CENTER);
-        panelInfoEtudiant.add(bouton, BorderLayout.SOUTH);
         
         add(panelListeEtudiants, BorderLayout.WEST);
         add(panelInfoEtudiant, BorderLayout.CENTER);
@@ -165,7 +159,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         case "lemp": afficherPanelAjoutLivre("emprunt"); break;
         case "lres": afficherPanelAjoutLivre("reservation"); break;
         case "save": changerInformationsEtudiant(); break;
-        case "suppr": System.out.println("suppr"); break;
         case "supprimer-emprunt": supprimerEmprunt(); break;
         case "supprimer-reservation": supprimerReservation(); break;
         case "supprimer-etudiant": supprimerEtudiant(); break;
@@ -190,7 +183,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         panelNord.add(new JButton("Rechercher"));
         
 
-        JTable tableLivres = new JTable(new ModeleTableLivres());
+        JTable tableLivres = new JTable(new ModeleTableLivres(true));
         tableLivres.setRowHeight(25);
         tableLivres.setAutoCreateRowSorter(true);
         

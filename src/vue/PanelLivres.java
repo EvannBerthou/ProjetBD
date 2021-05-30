@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 import constante.IdConnexion;
 import modele.*;
 
-/**Class de la page de recherche de livre pour le/la bibliothècaire
+/**Class de la page de recherche de livre pour le/la bibliothï¿½caire
  * 
  * @author jules
  *
@@ -132,7 +132,7 @@ public class PanelLivres extends JPanel implements ActionListener{
 		
 		JPanel listeLivre = new JPanel(new BorderLayout());
 		
-		modeleLivre= new ModeleTableLivres();
+		modeleLivre= new ModeleTableLivres(true);
 		
 		tableLivres = new JTable(modeleLivre);
 		tableLivres.setRowHeight(25);
