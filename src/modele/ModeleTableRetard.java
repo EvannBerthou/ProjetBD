@@ -1,22 +1,53 @@
 package modele;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.table.DefaultTableModel;
 
+import constante.IdConnexion;
+
 public class ModeleTableRetard extends DefaultTableModel{
+	/**
+	 * nombre de colonne initial
+	 */
 	int nCol = 20;
+	/**
+	 * nombre de ligne initial
+	 */
 	int nRow = 3;
 	
+	/**
+	 * Le constructeur de la classe ModeleTableRetard
+	 */
 	public ModeleTableRetard() {
 		setColumnCount(nCol);
 		setRowCount(nRow);
 		
+		ArrayList<String> arrayTitres = new ArrayList<String>();
+		ArrayList<String> arrayEtudiant = new ArrayList<String>();
+		ArrayList<String> arrayEmail = new ArrayList<String>();
+		
+		try {
+			ResultSet result = Connexion.executeQuery("SELECT prenom,nom,email,titre from emprunt e, etu, livre l,exemplaire ex where etu.id_et = e.id_et AND l.id_liv = ex.id_liv AND ex.id_ex = e.id_ex AND e.date_retour <  DATE()"); // Marche pour SQLite mais pas pour oracle
+			while(result.next()) {
+				arrayEtudiant.add(result.getString(1) + " " + result.getString(2));
+				arrayEmail.add(result.getString(3));
+				arrayTitres.add(result.getString(4));
+			}
+			
+		}catch(SQLException e) {
+			System.out.println(e);	
+		}
+		
+		String[] titres = arrayTitres.toArray(new String[0]);
+		String[] etudiant = arrayEtudiant.toArray(new String[0]);
+		String[] email = arrayEmail.toArray(new String[0]);
+		
+		setAllValue(titres,etudiant,email);
+		
 		String[] colName = new String[] {"Titre","Etudiant","Adresse Email"};
-		
-		String[] titres = new String[] {"Titre1","Titre2","Titre3","Titre4"};
-		String[] auteurs = new String[] {"Etudiant1","Etudiant2","Etudiant3","Etudiant4"};
-		String[] exemplaire = new String[] {"Email1","Email2","Email3","Email4"};
-		setAllValue(titres,auteurs,exemplaire);
-		
 		setColumnIdentifiers(colName);
 	}
 
