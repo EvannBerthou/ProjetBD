@@ -89,12 +89,11 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         mettreAJourListeEtudiants();
-        /*
-        DefaultListModel<String> model = new DefaultListModel<String>();
-        Etudiant[] etus = getEtudiants();
-        for (Etudiant etu : etus) {
-            model.addElement(etu.toString());
-        }*/
+        JButton supprimerEtudiantBouton = new JButton("Supprimer");
+        supprimerEtudiantBouton.setActionCommand("supprimer-etudiant");
+        supprimerEtudiantBouton.addActionListener(this);
+        panelListeEtudiants.add(supprimerEtudiantBouton, BorderLayout.SOUTH);
+        
         
         
         listeEtudiants.addMouseListener(new MouseAdapter() {
@@ -169,6 +168,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         case "suppr": System.out.println("suppr"); break;
         case "supprimer-emprunt": supprimerEmprunt(); break;
         case "supprimer-reservation": supprimerReservation(); break;
+        case "supprimer-etudiant": supprimerEtudiant(); break;
         }
     }
     
@@ -339,6 +339,12 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     private void mettreAJoutEmpruntsReservations() {
+        if (etuSelectionne == null) {
+            listeEmprunts.setModel(new DefaultListModel<Livre>());
+            listeReservations.setModel(new DefaultListModel<Livre>());
+            return;
+        }
+        
         Livre[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etuSelectionne);
         Livre[] reservations = LivresEtudiants.getLivresReserveEtudiants(etuSelectionne);
 
@@ -355,7 +361,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         listeReservations.setModel(model);
     }
     
-    private void mettreAJourListeEtudiants() {
+    private void mettreAJourListeEtudiants() {        
         int index = listeEtudiants.getSelectedIndex();
         DefaultListModel<Etudiant> model = new DefaultListModel<Etudiant>();
         Etudiant[] etus = getEtudiants();
@@ -375,6 +381,16 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
         LivresEtudiants.supprimerReservation(etuSelectionne, livre.getTitre(), livre.getAuteur());
+        mettreAJoutEmpruntsReservations();
+    }
+    
+    private void supprimerEtudiant() {
+        if (etuSelectionne == null) {
+            return;
+        }
+        etuSelectionne.supprimer();
+        etuSelectionne = null;
+        mettreAJourListeEtudiants();
         mettreAJoutEmpruntsReservations();
     }
 }

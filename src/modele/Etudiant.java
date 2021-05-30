@@ -42,4 +42,15 @@ public class Etudiant {
     public String toString() {
         return nom + " " + prenom;
     }
+    
+    public void supprimer() {
+        try {
+            String[] params = new String[] { getEmail() };
+            Connexion.executeUpdate("DELETE FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", params);
+            Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", params);
+            Connexion.executeUpdate("DELETE FROM etu WHERE email = ?", params);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

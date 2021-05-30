@@ -30,7 +30,8 @@ public class ModeleTableRetard extends DefaultTableModel{
 		ArrayList<String> arrayEmail = new ArrayList<String>();
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT prenom,nom,email,titre from emprunt e, etu, livre l,exemplaire ex where etu.id_et = e.id_et AND l.id_liv = ex.id_liv AND ex.id_ex = e.id_ex AND e.date_retour <  DATE()"); // Marche pour SQLite mais pas pour oracle
+		    //TODO: Marche pour SQLite mais pas pour oracle
+			ResultSet result = Connexion.executeQuery("SELECT prenom,nom,email,titre from emprunt e, etu, livre l,exemplaire ex where etu.id_et = e.id_et AND l.id_liv = ex.id_liv AND ex.id_ex = e.id_ex AND e.date_retour <  DATE()"); 
 			while(result.next()) {
 				arrayEtudiant.add(result.getString(1) + " " + result.getString(2));
 				arrayEmail.add(result.getString(3));
@@ -52,7 +53,7 @@ public class ModeleTableRetard extends DefaultTableModel{
 	}
 
 	
-	/** Methode pour changer toute les lignes, chaque liste doivent faire la même tailles, sinon les éléments de trop ne seront pas afficher
+	/** Methode pour changer toute les lignes, chaque liste doivent faire la mï¿½me tailles, sinon les ï¿½lï¿½ments de trop ne seront pas afficher
 	 * 
 	 * @param parTitres Liste des titres
 	 * @param parEtudiant Liste des etudiant
@@ -75,7 +76,7 @@ public class ModeleTableRetard extends DefaultTableModel{
 	}
 	
 	/**
-	 * Methode pour rendre les cellules inéditable
+	 * Methode pour rendre les cellules inï¿½ditable
 	 */
 	public boolean isCellEditable(int row, int column) {
 		return false;
