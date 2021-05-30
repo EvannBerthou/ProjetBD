@@ -55,11 +55,29 @@ public class LivresEtudiants {
         return new Livre[0];
     }
 
-    public static void EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+    private static int nbLivreEmprunte(Etudiant etu) {
+        try {
+            ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", new String[] {etu.getEmail()});
+            if (rset.next()) { // Si un résultat à été renvoyé
+                return rset.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public static boolean EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+        int livresEmpruntes = nbLivreEmprunte(etu);
+        System.out.println(livresEmpruntes);
+        if (livresEmpruntes >= 5) {
+            return false;
+        }
+        
         try {
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre=? AND auteur=?)"
+                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre = ? AND auteur = ?)"
                     + ")",  
                     new String[] {
                             etu.getEmail(),
@@ -67,9 +85,28 @@ public class LivresEtudiants {
                     });
         } catch (SQLException e) {
         }
+        return true;
     }
     
-    public static void ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+    private static int nbLivreReserve(Etudiant etu) {
+        try {
+            ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", new String[] {etu.getEmail()});
+            if (rset.next()) { // Si un résultat à été renvoyé
+                return rset.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public static boolean ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+        int livresEmpruntes = nbLivreReserve(etu);
+        System.out.println(livresEmpruntes);
+        if (livresEmpruntes >= 5) {
+            return false;
+        }
+        
         try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
@@ -81,6 +118,7 @@ public class LivresEtudiants {
                     });
         } catch (SQLException e) {
         }
+        return true;
     }
     
     public static void supprimerEmprunt(Etudiant etu, int exemplaire) {

@@ -173,6 +173,11 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     public void afficherPanelAjoutLivre(String type) {
+        if (etuSelectionne == null) {
+            JOptionPane.showMessageDialog(null, "Aucun étudiant sélectionné.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
         JDialog popup = new JDialog();
         
         popup.setTitle("Ajout " + type + " pour " + "Nom " + "Prénom");
@@ -203,10 +208,17 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
                 int row = tableLivres.getSelectedRow();
                 String titre = (String) tableLivres.getValueAt(row, 0);
                 String auteur = (String) tableLivres.getValueAt(row, 1);
+                System.out.println(titre + "  " + auteur);
                 if (type.equals("emprunt")) {
-                    LivresEtudiants.EmprunterLivre(etuSelectionne, titre, auteur);
+                    if (LivresEtudiants.EmprunterLivre(etuSelectionne, titre, auteur) == false) {
+                        JOptionPane.showMessageDialog(null, etuSelectionne.getNom() + " " + etuSelectionne.getPrenom() 
+                            + " a déjà empruntés 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 } else if (type.equals("reservation")) {
-                    LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur);
+                    if (LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur) == false) {
+                        JOptionPane.showMessageDialog(null, etuSelectionne.getNom() + " " + etuSelectionne.getPrenom() 
+                            + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
                 mettreAJoutEmpruntsReservations();
                 popup.dispose();
