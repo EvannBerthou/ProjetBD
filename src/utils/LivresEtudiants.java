@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import modele.Connexion;
 import modele.Etudiant;
 import modele.Livre;
+import vue.PopupChoixExemplaire;
 
 public class LivresEtudiants {
 
@@ -68,7 +69,7 @@ public class LivresEtudiants {
     }
     
     //TODO: Remplacer nomLivre et auteurLivre par un objet de la classe Livre
-    public static boolean EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+    public static boolean EmprunterLivre(Etudiant etu, String id_ex) {
         int livresEmpruntes = nbLivreEmprunte(etu);
         if (livresEmpruntes >= 5) {
             return false;
@@ -78,13 +79,9 @@ public class LivresEtudiants {
         // quel exemplaire.
         try {
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
-                    + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_ex FROM exemplaire, livre WHERE exemplaire.id_liv = livre.id_liv AND titre = ? AND auteur = ? "
-                    + "AND id_ex NOT IN (SELECT ex.id_ex FROM exemplaire ex, emprunt em WHERE ex.id_ex = em.id_ex))"
-                    + ")",  
+                    + "(SELECT id_et FROM etu WHERE email=?), ?)",  
                     new String[] {
-                            etu.getEmail(),
-                            nomLivre, auteurLivre
+                            etu.getEmail(), id_ex
                     });
         } catch (SQLException e) {
         }
@@ -103,19 +100,31 @@ public class LivresEtudiants {
         return 0;
     }
     
-    public static boolean ReserverLivre(Etudiant etu, String nomLivre, String auteurLivre) {
+    public static boolean ReserverLivre(Etudiant etu, String titre, String auteur) {
         int livresEmpruntes = nbLivreReserve(etu);
         if (livresEmpruntes >= 5) {
             return false;
         }
         
         try {
+            String id_liv = Livre.getIdByTitre(titre);
+            ResultSet rset = Connexion.executeQuery("SELECT id_liv FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)",
+                    new String[] { etu.getEmail() });
+            while (rset.next()) {
+                if (rset.getString(1).equals(id_liv)) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+        }
+        
+        try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?)", 
+                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?))", 
                     new String[] {
                             etu.getEmail(),
-                            nomLivre, auteurLivre
+                            titre, auteur
                     });
         } catch (SQLException e) {
         }

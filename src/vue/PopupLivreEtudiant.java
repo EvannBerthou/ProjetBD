@@ -1,7 +1,6 @@
 package vue;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -16,7 +15,6 @@ import javax.swing.ScrollPaneConstants;
 
 import modele.Etudiant;
 import modele.ModeleTableLivres;
-import utils.LivresEtudiants;
 
 public abstract class PopupLivreEtudiant extends JDialog implements ActionListener {
     
@@ -50,23 +48,6 @@ public abstract class PopupLivreEtudiant extends JDialog implements ActionListen
         add(scrollPane, BorderLayout.CENTER);
         JButton ajoutBouton = new JButton("Ajouter");
         ajoutBouton.addActionListener(this);
-        /*
-        ajoutBouton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tableLivres.getSelectedRow();
-                String titre = (String) tableLivres.getValueAt(row, 0);
-                String auteur = (String) tableLivres.getValueAt(row, 1);
-
-                Etudiant etu = pbe.getEtuSelectionne();
-                    if (LivresEtudiants.ReserverLivre(etu, titre, auteur) == false) {
-                        JOptionPane.showMessageDialog(null, etu.toString()
-                        + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                }
-                pbe.mettreAJoutEmpruntsReservations();
-                dispose();
-            }
-        });*/
         add(ajoutBouton, BorderLayout.SOUTH);
 
         setVisible(true);
