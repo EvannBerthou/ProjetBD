@@ -19,8 +19,8 @@ public class Client extends JFrame {
 		PanelLivres panelLivres = new PanelLivres();
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Etudiant", null, panelEtudiant, "Does nothing");
-        tabbedPane.addTab("Livres", null, panelLivres, "Does nothing");
+        tabbedPane.addTab("Etudiant", null, panelEtudiant, "Gestion des étudiants");
+        tabbedPane.addTab("Livres", null, panelLivres, "Gestion des livres");
         
 		setContentPane(tabbedPane);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

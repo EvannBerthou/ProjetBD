@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.table.*;
 
 import constante.IdConnexion;
-/** Classe pour définir le style de la table du panelLivres
+/** Classe pour dï¿½finir le style de la table du panelLivres
  * 
  * @author jules
  *
@@ -20,7 +20,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 	/**
 	 * Constructeur de la classe
 	 */
-	public ModeleTableLivres() {
+	public ModeleTableLivres(boolean exclureEmprunte) {
 		setColumnCount(nCol);
 		setRowCount(nRow);
 		
@@ -29,12 +29,22 @@ public class ModeleTableLivres extends DefaultTableModel{
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
+		String sql;
+		if (!exclureEmprunte) {
+		    sql = "SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ";
+		} else {
+		    sql = "SELECT a.num - b.num - c.num FROM "
+                    + "(SELECT COUNT(*) num FROM exemplaire WHERE id_liv = ?) a, "
+                    + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b,"
+                    + "(SELECT COUNT(*) num FROM reserv WHERE id_liv = ?) c";
+		}
+
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT * FROM Livre ORDER BY titre ASC");
+			ResultSet result = Connexion.executeQuery("SELECT * FROM livre WHERE id_liv");
 			while(result.next()) {
 				arrayTitres.add(result.getString(2));
 				arrayAuteurs.add(result.getString(3));
-				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv ="+result.getString(1));
+				ResultSet exmplaire = Connexion.executeQuery(sql, new String[] { result.getString(1), result.getString(1), result.getString(1)});
 				arrayExemplaire.add(exmplaire.getInt(1));
 			}
 		}catch(SQLException e) {
@@ -50,8 +60,9 @@ public class ModeleTableLivres extends DefaultTableModel{
 		String[] colName = new String[] {"Titre","Auteur","Exemplaire"};
 		setColumnIdentifiers(colName);
 	}
+
 	
-	/** Methode pour changer toute les lignes, chaque liste doivent faire la même tailles, sinon les éléments de trop ne seront pas afficher
+	/** Methode pour changer toute les lignes, chaque liste doivent faire la mï¿½me tailles, sinon les ï¿½lï¿½ments de trop ne seront pas afficher
 	 * 
 	 * @param parTitres Liste des titres
 	 * @param parAuteurs Listes des auteurs
@@ -74,7 +85,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 	}
 	
 	/**
-	 * Methode pour rendre les cellules inéditable
+	 * Methode pour rendre les cellules inï¿½ditable
 	 */
 	public boolean isCellEditable(int row, int column) {
 	       return false;
