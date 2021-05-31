@@ -33,9 +33,10 @@ public class ModeleTableLivres extends DefaultTableModel{
 		if (!exclureEmprunte) {
 		    sql = "SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ";
 		} else {
-		    sql = "SELECT a.num - b.num FROM "
+		    sql = "SELECT a.num - b.num - c.num FROM "
                     + "(SELECT COUNT(*) num FROM exemplaire WHERE id_liv = ?) a, "
-                    + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b";
+                    + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b,"
+                    + "(SELECT COUNT(*) num FROM reserv WHERE id_liv = ?) c";
 		}
 
 		try {
@@ -43,7 +44,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 			while(result.next()) {
 				arrayTitres.add(result.getString(2));
 				arrayAuteurs.add(result.getString(3));
-				ResultSet exmplaire = Connexion.executeQuery(sql, new String[] { result.getString(1), result.getString(1)});
+				ResultSet exmplaire = Connexion.executeQuery(sql, new String[] { result.getString(1), result.getString(1), result.getString(1)});
 				arrayExemplaire.add(exmplaire.getInt(1));
 			}
 		}catch(SQLException e) {

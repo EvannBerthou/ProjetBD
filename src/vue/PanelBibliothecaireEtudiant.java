@@ -73,7 +73,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return new Etudiant[0];
         }
 
         return (Etudiant[]) etus.toArray(new Etudiant[etus.size()]);
@@ -93,7 +93,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         supprimerEtudiantBouton.setActionCommand("supprimer-etudiant");
         supprimerEtudiantBouton.addActionListener(this);
         panelListeEtudiants.add(supprimerEtudiantBouton, BorderLayout.SOUTH);
-        
         
         
         listeEtudiants.addMouseListener(new MouseAdapter() {
@@ -119,8 +118,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         enrengistrerButton.addActionListener(this);
         infos.add(enrengistrerButton);
         
+        // Panels emprunt et panel réservation
         JPanel panel = new JPanel(new GridLayout(1,2, 20, 20));
 
+        //TODO: Extract
         JPanel empruntsPanel = new JPanel(new BorderLayout());
         listeEmprunts = new JList<Livre>();
         JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
@@ -155,9 +156,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     public void actionPerformed(ActionEvent e) {       
         String action = e.getActionCommand();
         switch (action) {
-        case "letu": afficherPanelAjoutEtudiant(); break;
-        case "lemp": afficherPanelAjoutLivre("emprunt"); break;
-        case "lres": afficherPanelAjoutLivre("reservation"); break;
+        case "letu": new PopupNouveauEtudiant(this); break;
+        case "lemp": new PopupAjoutEmprunt(this); break;
+        case "lres": new PopupAjoutReservation(this); break;
         case "save": changerInformationsEtudiant(); break;
         case "supprimer-emprunt": supprimerEmprunt(); break;
         case "supprimer-reservation": supprimerReservation(); break;
@@ -165,66 +166,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
-    public void afficherPanelAjoutLivre(String type) {
-        if (etuSelectionne == null) {
-            JOptionPane.showMessageDialog(null, "Aucun étudiant sélectionné.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        
-        JDialog popup = new JDialog();
-        
-        popup.setTitle("Ajout " + type + " pour " + "Nom " + "Prénom");
-
-        popup.setLayout(new BorderLayout());
-        
-        JPanel panelNord = new JPanel();
-        panelNord.add(new JLabel("Titre"));
-        panelNord.add(new JTextField(20));
-        panelNord.add(new JButton("Rechercher"));
-        
-
-        JTable tableLivres = new JTable(new ModeleTableLivres(true));
-        tableLivres.setRowHeight(25);
-        tableLivres.setAutoCreateRowSorter(true);
-        
-        JScrollPane scrollPane = new JScrollPane(tableLivres,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        
-        popup.add(panelNord, BorderLayout.NORTH);
-        popup.add(scrollPane, BorderLayout.CENTER);
-        JButton ajoutBouton = new JButton("Ajouter");
-        ajoutBouton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = tableLivres.getSelectedRow();
-                String titre = (String) tableLivres.getValueAt(row, 0);
-                String auteur = (String) tableLivres.getValueAt(row, 1);
-                System.out.println(titre + "  " + auteur);
-                if (type.equals("emprunt")) {
-                    if (LivresEtudiants.EmprunterLivre(etuSelectionne, titre, auteur) == false) {
-                        JOptionPane.showMessageDialog(null, etuSelectionne.getNom() + " " + etuSelectionne.getPrenom() 
-                            + " a déjà empruntés 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } else if (type.equals("reservation")) {
-                    if (LivresEtudiants.ReserverLivre(etuSelectionne, titre, auteur) == false) {
-                        JOptionPane.showMessageDialog(null, etuSelectionne.getNom() + " " + etuSelectionne.getPrenom() 
-                            + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-                mettreAJoutEmpruntsReservations();
-                popup.dispose();
-            }
-        });
-        popup.add(ajoutBouton, BorderLayout.SOUTH);
-        
-        popup.setVisible(true);
-        popup.setBackground(java.awt.Color.red);
-        popup.setSize(500, 400);
-    }
-    
-    private boolean ajouterEtudiant(Etudiant etu) {
+    boolean ajouterEtudiant(Etudiant etu) {
         System.out.println("Ajout de " + etu.toString());
         try {
             Connexion.executeUpdate("INSERT INTO etu(nom,prenom,email,mdp) VALUES (?, ?, ?, ?)",
@@ -238,67 +180,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
-    public void afficherPanelAjoutEtudiant() {
-        JDialog popup = new JDialog();
-        
-        popup.setTitle("Ajout d'un étudiant");
-
-        popup.setLayout(new GridLayout(5,2));
-        popup.add(new JLabel("Nom"));
-        JTextField tfNom = new JTextField(10);
-        popup.add(tfNom);
-        
-        popup.add(new JLabel("Prénom"));
-        JTextField tfPrenom = new JTextField(10);
-        popup.add(tfPrenom);
-        
-        popup.add(new JLabel("Email"));
-        JTextField tfMail = new JTextField(10);
-        popup.add(tfMail);
-        
-        popup.add(new JLabel("Mot de passe"));
-        JTextField tfMdp = new JTextField(10);
-        popup.add(tfMdp);
-
-        
-        JButton annulerBouton = new JButton("Annuler");
-        annulerBouton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                popup.dispose();
-            }
-        });
-        
-        JButton ajouterBouton = new JButton("Ajouter");
-        ajouterBouton.addActionListener(new ActionListener() {
-            @Override
-            //TODO: Vérifier que les textfields ne sont pas vide
-            public void actionPerformed(ActionEvent e) {
-                String nom = tfNom.getText();
-                String prenom = tfPrenom.getText();
-                String mail = tfMail.getText();
-                String mdp = tfMdp.getText();
-                Etudiant etu = new Etudiant(nom, prenom, mail, mdp);
-                //TODO: Afficher un message de succès ou d'erreur
-                if (ajouterEtudiant(etu)) {
-                    JOptionPane.showMessageDialog(null, "Etudiant " + nom + " " + prenom + " ajouté.", "Succès", JOptionPane.INFORMATION_MESSAGE);
-                    popup.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Erreur dans l'ajout de l'étudiant.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-                }
-                mettreAJourListeEtudiants();
-            }
-        });
-        
-       
-        popup.add(annulerBouton);
-        popup.add(ajouterBouton); 
-        
-        popup.setVisible(true);
-        popup.setBackground(java.awt.Color.red);
-        popup.setSize(300, 150);
-    } 
-    
     private void changerEtudiantSelectionne(Etudiant etu) {
         textFields.get("Nom").setText(etu.getNom());
         textFields.get("Prénom").setText(etu.getPrenom());
@@ -308,38 +189,40 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     private void changerInformationsEtudiant() {
-        if (etuSelectionne == null) {
+        if (getEtuSelectionne() == null) {
             return;
         }
         
         try {
-            if (textFields.get("Mdp").getText().isEmpty()) {
-                Connexion.executeUpdate("UPDATE etu SET nom = ?, prenom = ?, email = ? WHERE email = ?",
-                        new String[] {
-                                textFields.get("Nom").getText(),
-                                textFields.get("Prénom").getText(),
-                                textFields.get("Email").getText(),
-                                etuSelectionne.getEmail(),
-                        }
-                );
-            } else {
-
+            Connexion.executeUpdate("UPDATE etu SET nom = ?, prenom = ?, email = ? WHERE email = ?", new String[] {
+                    textFields.get("Nom").getText(),
+                    textFields.get("Prénom").getText(),
+                    textFields.get("Email").getText(),
+                    getEtuSelectionne().getEmail()
+            });
+            
+            if (!textFields.get("Mdp").getText().isEmpty()) {
+                Connexion.executeUpdate("UPDATE etu SET mdp = ? WHERE email = ?", new String[] {
+                        textFields.get("Mdp").getText(),
+                        getEtuSelectionne().getEmail()
+                });
             }
+            
             mettreAJourListeEtudiants();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    private void mettreAJoutEmpruntsReservations() {
-        if (etuSelectionne == null) {
+    void mettreAJoutEmpruntsReservations() {
+        if (getEtuSelectionne() == null) {
             listeEmprunts.setModel(new DefaultListModel<Livre>());
             listeReservations.setModel(new DefaultListModel<Livre>());
             return;
         }
         
-        Livre[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etuSelectionne);
-        Livre[] reservations = LivresEtudiants.getLivresReserveEtudiants(etuSelectionne);
+        Livre[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(getEtuSelectionne());
+        Livre[] reservations = LivresEtudiants.getLivresReserveEtudiants(getEtuSelectionne());
 
         DefaultListModel<Livre> model = new DefaultListModel<Livre>();
         for (Livre emprunt : emprunts) {
@@ -354,7 +237,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         listeReservations.setModel(model);
     }
     
-    private void mettreAJourListeEtudiants() {        
+    void mettreAJourListeEtudiants() {        
         int index = listeEtudiants.getSelectedIndex();
         DefaultListModel<Etudiant> model = new DefaultListModel<Etudiant>();
         Etudiant[] etus = getEtudiants();
@@ -367,23 +250,27 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private void supprimerEmprunt() {
         Livre livre = listeEmprunts.getSelectedValue();
-        LivresEtudiants.supprimerEmprunt(etuSelectionne, livre.getExemplaire());
+        LivresEtudiants.supprimerEmprunt(getEtuSelectionne(), livre.getExemplaire());
         mettreAJoutEmpruntsReservations();
     }
     
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
-        LivresEtudiants.supprimerReservation(etuSelectionne, livre.getTitre(), livre.getAuteur());
+        LivresEtudiants.supprimerReservation(getEtuSelectionne(), livre.getTitre(), livre.getAuteur());
         mettreAJoutEmpruntsReservations();
     }
     
     private void supprimerEtudiant() {
-        if (etuSelectionne == null) {
+        if (getEtuSelectionne() == null) {
             return;
         }
-        etuSelectionne.supprimer();
+        getEtuSelectionne().supprimer();
         etuSelectionne = null;
         mettreAJourListeEtudiants();
         mettreAJoutEmpruntsReservations();
+    }
+
+    Etudiant getEtuSelectionne() {
+        return etuSelectionne;
     }
 }

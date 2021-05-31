@@ -67,12 +67,15 @@ public class LivresEtudiants {
         return 0;
     }
     
+    //TODO: Remplacer nomLivre et auteurLivre par un objet de la classe Livre
     public static boolean EmprunterLivre(Etudiant etu, String nomLivre, String auteurLivre) {
         int livresEmpruntes = nbLivreEmprunte(etu);
         if (livresEmpruntes >= 5) {
             return false;
         }
         
+        //TODO: L'id_ex ne doit pas être choisis tout seul mais par l'utilisateur afin de pouvoir suivre qui emprunte
+        // quel exemplaire.
         try {
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
@@ -109,9 +112,7 @@ public class LivresEtudiants {
         try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_liv FROM livre WHERE titre=? AND auteur=? "
-                    + "AND id_liv NOT IN (SELECT id_ex FROM exemplaire ex, emprunt em WHERE ex.id_ex = em.id_ex)"
-                    + ")",  
+                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?)", 
                     new String[] {
                             etu.getEmail(),
                             nomLivre, auteurLivre
