@@ -31,8 +31,6 @@ public class ModeleTableLivres extends DefaultTableModel{
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
-
-
 		try {
 			ResultSet result = Connexion.executeQuery("SELECT * FROM livre WHERE id_liv");
 			while(result.next()) {
@@ -82,5 +80,5 @@ public class ModeleTableLivres extends DefaultTableModel{
 	 */
 	public boolean isCellEditable(int row, int column) {
 	       return false;
-	    }
+	}
 }

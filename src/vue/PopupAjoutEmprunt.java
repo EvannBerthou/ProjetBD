@@ -45,11 +45,9 @@ public class PopupAjoutEmprunt extends PopupLivreEtudiant {
         }
         
         Etudiant etu = pbe.getEtuSelectionne();
-            if (LivresEtudiants.EmprunterLivre(etu, titre, auteur) == false) {
-                JOptionPane.showMessageDialog(null, etu.toString() 
-                        + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-        }
-        pbe.mettreAJoutEmpruntsReservations();
+
+        String id_liv = Livre.getIdByTitre(titre);
+        PopupChoixExemplaire exemplaire = new PopupChoixExemplaire(pbe, etu, id_liv);
         dispose();
     }
 }
