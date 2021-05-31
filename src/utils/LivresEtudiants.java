@@ -112,7 +112,7 @@ public class LivresEtudiants {
         try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?)", 
+                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?))", 
                     new String[] {
                             etu.getEmail(),
                             nomLivre, auteurLivre
