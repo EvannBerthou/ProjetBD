@@ -27,22 +27,22 @@ public class ModeleTableLivres extends DefaultTableModel{
 		setRowCount(nRow);
 		
 		
-		ArrayList<String> arrayTitres = new ArrayList<String>();
+		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT * FROM livre WHERE id_liv");
+			ResultSet result = Connexion.executeQuery("SELECT * FROM livre order by titre asc");
 			while(result.next()) {
-				arrayTitres.add(result.getString(2));
-				arrayAuteurs.add(result.getString(3));				
+				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
+				arrayAuteurs.add(result.getString(3));
 				arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), exclureEmprunte));
 			}
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}
 		
-		String[] titres = arrayTitres.toArray(new String[0]);
+		JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
 		String[] auteurs = arrayAuteurs.toArray(new String[0]);
 		Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
 		setAllValue(titres,auteurs,exemplaire);
@@ -59,7 +59,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 	 * @param parAuteurs Listes des auteurs
 	 * @param parExemplaires Liste des nombre d'exemplaire 
 	 */
-	public void setAllValue(String[] parTitres,String[] parAuteurs, Integer[] parExemplaires){
+	public void setAllValue(JTableLivre[] parTitres,String[] parAuteurs, Integer[] parExemplaires){
 		int length = parTitres.length;
 		if(length > parAuteurs.length) length = parAuteurs.length;
 		if(length > parExemplaires.length) length = parExemplaires.length;
