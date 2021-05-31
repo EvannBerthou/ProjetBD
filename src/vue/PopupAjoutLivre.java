@@ -177,6 +177,9 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 		}catch(SQLException e) {
 			System.out.println(e);
 		}
+		
+		livreField.setSelectedIndex(0);
+		nombresField.setValue(1);
 	}
 
 	/**
@@ -196,6 +199,10 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}
+		
+		exemplaireField.setValue(1);
+		titreField.setText("");
+		auteurField.setText("");
 	}
 
 	@Override
@@ -207,7 +214,8 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 		}
 	}
 
-	/**Methode pour obtenir la liste de tout les livre, pour les comboBox
+	/**
+	 * Methode pour obtenir la liste de tout les livre, pour les comboBox
 	 * 
 	 * @return la liste 
 	 */

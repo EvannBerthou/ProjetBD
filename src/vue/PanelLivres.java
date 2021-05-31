@@ -10,10 +10,9 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import constante.IdConnexion;
 import modele.*;
 
-/**Class de la page de recherche de livre pour le/la bibliothï¿½caire
+/**Class de la page de recherche de livre pour le/la bibliothècaire
  * 
  * @author jules
  *
@@ -50,77 +49,81 @@ public class PanelLivres extends JPanel implements ActionListener{
 		
 		JPanel recherche = new JPanel(new GridBagLayout());
 		GridBagConstraints cRecherche = new GridBagConstraints();
+		cRecherche.weightx = 1;
+		cRecherche.weighty = 1;
 		
-		JLabel titre = new JLabel("Titre ");
+		JButton supprLivre = new JButton("Supprimer le Livre");
 		cRecherche.gridx = 0;
 		cRecherche.gridy = 0;
 		cRecherche.anchor = GridBagConstraints.EAST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
+		supprLivre.setPreferredSize(new Dimension(180, 30));
+		supprLivre.setActionCommand("supLivre");
+		supprLivre.addActionListener(this);
+		recherche.add(supprLivre,cRecherche);
+		
+		JButton supprExemp = new JButton("Supprimer un exemplaire");
+		cRecherche.gridx = 0;
+		cRecherche.gridy = 1;
+		cRecherche.anchor = GridBagConstraints.EAST;
+		supprExemp.setPreferredSize(new Dimension(180, 30));
+		supprExemp.setActionCommand("supExempl");
+		supprExemp.addActionListener(this);
+		recherche.add(supprExemp,cRecherche);
+		
+		JLabel titre = new JLabel("Titre ");
+		cRecherche.gridx = 1;
+		cRecherche.gridy = 0;
+		cRecherche.anchor = GridBagConstraints.EAST;
 		recherche.add(titre,cRecherche);
 		
 		titreField = new JTextField(20);
-		cRecherche.gridx = 1;
+		cRecherche.gridx = 2;
 		cRecherche.gridy = 0;
 		cRecherche.anchor = GridBagConstraints.WEST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
 		recherche.add(titreField,cRecherche);
 		
 		JButton titreRecherche = new JButton("Rechercher");
-		cRecherche.gridx = 1;
+		cRecherche.gridx = 2;
 		cRecherche.gridy = 1;
 		cRecherche.anchor = GridBagConstraints.WEST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
 		titreRecherche.setActionCommand("rchrTitre");
 		titreRecherche.addActionListener(this);
 		recherche.add(titreRecherche,cRecherche);
 		
 		JLabel auteur = new JLabel("Auteur ");
-		cRecherche.gridx = 2;
+		cRecherche.gridx = 3;
 		cRecherche.gridy = 0;
 		cRecherche.anchor = GridBagConstraints.EAST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
 		recherche.add(auteur,cRecherche);
 		
 		auteurField = new JTextField(20);
-		cRecherche.gridx = 3;
+		cRecherche.gridx = 4;
 		cRecherche.gridy = 0;
 		cRecherche.anchor = GridBagConstraints.WEST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
 		recherche.add(auteurField,cRecherche);
 		
 		JButton auteurRecherche = new JButton("Rechercher");
-		cRecherche.gridx = 3;
+		cRecherche.gridx = 4;
 		cRecherche.gridy = 1;
 		cRecherche.anchor = GridBagConstraints.WEST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
 		auteurRecherche.setActionCommand("rchrAuteur");
 		auteurRecherche.addActionListener(this);
 		recherche.add(auteurRecherche,cRecherche);
 		
 		JButton livreRetard = new JButton("Livres en retard");
-		cRecherche.gridx = 4;
+		cRecherche.gridx = 5;
 		cRecherche.gridy = 0;
 		cRecherche.anchor = GridBagConstraints.EAST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
-		livreRetard.setPreferredSize(new Dimension(150, 30));
+		livreRetard.setPreferredSize(new Dimension(180, 30));
 		livreRetard.setActionCommand("lvrRetard");
 		livreRetard.addActionListener(this);
 		recherche.add(livreRetard,cRecherche);
 		
 		JButton livreAjout = new JButton("Ajouter un livre");
-		cRecherche.gridx = 4;
+		cRecherche.gridx = 5;
 		cRecherche.gridy = 1;
 		cRecherche.anchor = GridBagConstraints.EAST;
-		cRecherche.weightx = 1;
-		cRecherche.weighty = 1;
-		livreAjout.setPreferredSize(new Dimension(150, 30));
+		livreAjout.setPreferredSize(new Dimension(180, 30));
 		livreAjout.setActionCommand("ajLivre");
 		livreAjout.addActionListener(this);
 		recherche.add(livreAjout,cRecherche);
@@ -132,7 +135,7 @@ public class PanelLivres extends JPanel implements ActionListener{
 		
 		JPanel listeLivre = new JPanel(new BorderLayout());
 		
-		modeleLivre= new ModeleTableLivres(true);
+		modeleLivre= new ModeleTableLivres(false);
 		
 		tableLivres = new JTable(modeleLivre);
 		tableLivres.setRowHeight(25);
@@ -162,7 +165,7 @@ public class PanelLivres extends JPanel implements ActionListener{
 		popup.setTitle("Ajouter un livres, ou des exemplaires");
 		popup.setLayout(new BorderLayout());
 		
-		JTable tableLivres = new JTable(new ModeleTableRetard());
+		tableLivres = new JTable(new ModeleTableRetard());
 		tableLivres.setRowHeight(25);
 		
 		JScrollPane scrollPane = new JScrollPane(tableLivres,
@@ -176,17 +179,43 @@ public class PanelLivres extends JPanel implements ActionListener{
 	}
 	
 	/**
+	 * Mezthode pour recharger la liste des livre
+	 */
+	public void reload() {
+		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
+		ArrayList<String> arrayAuteurs = new ArrayList<String>();
+		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
+		
+		try {
+			ResultSet result = Connexion.executeQuery("SELECT * FROM livre order by titre asc");
+			while(result.next()) {
+				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
+				arrayAuteurs.add(result.getString(3));
+				arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), false));
+			}
+		}catch(SQLException e) {
+			System.out.println(e);	
+		}
+		
+		JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
+		String[] auteurs = arrayAuteurs.toArray(new String[0]);
+		Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
+		modeleLivre.setAllValue(titres,auteurs,exemplaire);
+		
+	}
+	
+	/**
 	 * Methode qui met a jour la liste de livre en fonction de la recherche par titre
 	 */
 	public void rechercheTitre() {
-		ArrayList<String> arrayTitres = new ArrayList<String>();
+		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
 			ResultSet result = Connexion.executeQuery("SELECT * FROM Livre WHERE titre LIKE '%" + titreField.getText() + "%' ORDER BY titre ASC");
 			while(result.next()) {
-				arrayTitres.add(result.getString(2));
+				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
 				arrayAuteurs.add(result.getString(3));
 				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv ="+result.getString(1));
 				arrayExemplaire.add(exmplaire.getInt(1));
@@ -196,7 +225,7 @@ public class PanelLivres extends JPanel implements ActionListener{
 			System.out.println(e);	
 		}
 		
-		String[] titres = arrayTitres.toArray(new String[0]);
+		JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
 		String[] auteurs = arrayAuteurs.toArray(new String[0]);
 		Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
 		modeleLivre.setAllValue(titres,auteurs,exemplaire);
@@ -208,14 +237,14 @@ public class PanelLivres extends JPanel implements ActionListener{
 	 * Methode qui met a jour la liste de livre en fonction de la recherche par auteur
 	 */
 	public void rechercheAuteur() {
-		ArrayList<String> arrayTitres = new ArrayList<String>();
+		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
 			ResultSet result = Connexion.executeQuery("SELECT * FROM Livre WHERE auteur LIKE '%" + auteurField.getText() + "%' ORDER BY titre ASC");
 			while(result.next()) {
-				arrayTitres.add(result.getString(2));
+				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
 				arrayAuteurs.add(result.getString(3));
 				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv ="+result.getString(1));
 				arrayExemplaire.add(exmplaire.getInt(1));
@@ -224,12 +253,58 @@ public class PanelLivres extends JPanel implements ActionListener{
 			System.out.println(e);	
 		}
 		
-		String[] titres = arrayTitres.toArray(new String[0]);
+		JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
 		String[] auteurs = arrayAuteurs.toArray(new String[0]);
 		Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
 		modeleLivre.setAllValue(titres,auteurs,exemplaire);
 
 		auteurField.setText("");
+	}
+	
+	/**
+	 * Methode pour supprimer un livre
+	 */
+	public void suppimerLivre() {
+		if(tableLivres.getSelectedRowCount() == 0) {
+			return;
+		}
+		int row = tableLivres.getSelectedRow();
+		
+		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row,0);
+		
+		try {
+			ResultSet result = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv=" + livre.getId());
+			while(result.next()) {
+				Connexion.executeUpdate("DELETE FROM emprunt WHERE id_ex="+ result.getString(1));
+			}
+			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_liv=" + livre.getId());
+			Connexion.executeUpdate("DELETE FROM livre WHERE id_liv=" + livre.getId());
+		}catch(SQLException e) {
+			System.out.println(e);	
+		}
+		
+		reload();
+		
+	}
+	
+	/**
+	 * Methode pour supprimer un exemplaire
+	 */
+	public void suppimerExemplaire() {
+		if(tableLivres.getSelectedRowCount() == 0) {
+			return;
+		}
+		int row = tableLivres.getSelectedRow();
+		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row,0);
+		
+		try {
+			ResultSet result = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv=" + livre.getId() + " EXCEPT SELECT id_ex FROM emprunt WHERE id_ex IN (SELECT id_ex FROM exemplaire where id_liv=" + livre.getId() + ")");
+			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_ex =" + result.getInt(1));
+		}catch(SQLException e) {
+			System.out.println(e);	
+		}
+		
+		reload();
 	}
 	
 	@Override
@@ -239,7 +314,9 @@ public class PanelLivres extends JPanel implements ActionListener{
 		case "rchrTitre": rechercheTitre(); break;
 		case "rchrAuteur": rechercheAuteur(); break;
 		case "lvrRetard": panelLivreRetard(); break;
-		case "ajLivre":panelAjoutLivres(); break;
+		case "ajLivre": panelAjoutLivres(); break;
+		case "supLivre": suppimerLivre(); break;
+		case "supExempl": suppimerExemplaire(); break;
 		}
 	}
 }
