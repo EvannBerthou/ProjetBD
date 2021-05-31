@@ -28,6 +28,7 @@ import modele.Connexion;
 import modele.Etudiant;
 import modele.Livre;
 import modele.ModeleTableLivres;
+import utils.Bouton;
 import utils.LivresEtudiants;
 
 public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener {    
@@ -47,16 +48,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         JTextField tf = new JTextField(10);
         textFields.put(name, tf);
         panel.add(tf, BorderLayout.CENTER);
-        return panel;
-    }
-    
-    public JPanel JLabelWithButton(String label, String btnAction) {
-        JPanel panel = new JPanel(new BorderLayout(30,30));
-        panel.add(new JLabel(label), BorderLayout.WEST);
-        JButton button = new JButton("+");
-        button.setActionCommand(btnAction);
-        button.addActionListener(this);
-        panel.add(button, BorderLayout.EAST);
         return panel;
     }
     
@@ -104,7 +95,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         });
 
         JScrollPane scrollListeEtudiants = new JScrollPane(listeEtudiants);
-        panelListeEtudiants.add(JLabelWithButton("Liste étudiants", "letu"), BorderLayout.NORTH);
+        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste étudiants", "letu", this), BorderLayout.NORTH);
         panelListeEtudiants.add(scrollListeEtudiants, BorderLayout.CENTER);
         
         // Panel CENTRE (informations de l'étudiants sélectionné)
@@ -121,29 +112,13 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         // Panels emprunt et panel réservation
         JPanel panel = new JPanel(new GridLayout(1,2, 20, 20));
 
-        //TODO: Extract
-        JPanel empruntsPanel = new JPanel(new BorderLayout());
         listeEmprunts = new JList<Livre>();
-        JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
-        empruntsPanel.add(JLabelWithButton("Livres empruntés", "lemp"), BorderLayout.NORTH);
-        empruntsPanel.add(scrollEmprunts, BorderLayout.CENTER);
-        JButton supprimerEmpruntBouton = new JButton("Supprimer");
-        supprimerEmpruntBouton.setActionCommand("supprimer-emprunt");
-        supprimerEmpruntBouton.addActionListener(this);
-        empruntsPanel.add(supprimerEmpruntBouton, BorderLayout.SOUTH);
-        
-        JPanel reservationPanel = new JPanel(new BorderLayout());
         listeReservations = new JList<Livre>();
-        JScrollPane scrollReservations = new JScrollPane(listeReservations);
-        reservationPanel.add(JLabelWithButton("Livres réservés", "lres"), BorderLayout.NORTH);
-        reservationPanel.add(scrollReservations, BorderLayout.CENTER);
-        JButton supprimerReservBouton = new JButton("Supprimer");
-        supprimerReservBouton.setActionCommand("supprimer-reservation");
-        supprimerReservBouton.addActionListener(this);
-        reservationPanel.add(supprimerReservBouton, BorderLayout.SOUTH);
-
-        panel.add(empruntsPanel);
-        panel.add(reservationPanel);
+        PanelListeEmprunt panelListeEmprunts = new PanelListeEmprunt(listeEmprunts, this);
+        PanelListeReservation panelListeReservation = new PanelListeReservation(listeReservations, this);
+            
+        panel.add(panelListeEmprunts);
+        panel.add(panelListeReservation);
 
         panelInfoEtudiant.add(infos, BorderLayout.NORTH);   
         panelInfoEtudiant.add(panel, BorderLayout.CENTER);
