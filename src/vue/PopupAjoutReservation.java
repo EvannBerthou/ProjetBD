@@ -26,8 +26,7 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
 
         Etudiant etu = pbe.getEtuSelectionne();
             if (LivresEtudiants.ReserverLivre(etu, titre, auteur) == false) {
-                JOptionPane.showMessageDialog(null, etu.toString()
-                + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Erreur dans la réservation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
         }
         pbe.mettreAJoutEmpruntsReservations();
         dispose();
