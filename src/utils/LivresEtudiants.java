@@ -15,7 +15,7 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT titre,auteur, exemplaire.id_ex FROM exemplaire, livre, etu, emprunt " +
+                    "SELECT livre.id_liv, titre,auteur, exemplaire.id_ex FROM exemplaire, livre, etu, emprunt " +
                     "WHERE emprunt.id_ex = exemplaire.id_ex AND exemplaire.id_liv = livre.id_liv " 
                             + "AND emprunt.id_et = etu.id_et AND etu.email = ?", 
                     new String[] {
@@ -23,7 +23,7 @@ public class LivresEtudiants {
                     });
             ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                Livre livre = new Livre(rset.getString(1), rset.getString(2), rset.getInt(3));
+                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), rset.getInt(4));
                 livres.add(livre);
             }
             
@@ -38,14 +38,14 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT titre,auteur FROM livre, etu, reserv " +
+                    "SELECT livre.id_liv,titre,auteur FROM livre, etu, reserv " +
                     "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ?", 
                     new String[] {
                             etu.getEmail()
                     });
             ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                Livre livre = new Livre(rset.getString(1), rset.getString(2), -1);
+                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(2), -1);
                 livres.add(livre);
             }
             
@@ -100,14 +100,13 @@ public class LivresEtudiants {
         return 0;
     }
     
-    public static boolean ReserverLivre(Etudiant etu, String titre, String auteur) {
+    public static boolean ReserverLivre(Etudiant etu, String id_liv) {
         int livresEmpruntes = nbLivreReserve(etu);
         if (livresEmpruntes >= 5) {
             return false;
         }
-        
+
         try {
-            String id_liv = Livre.getIdByTitre(titre);
             ResultSet rset = Connexion.executeQuery("SELECT id_liv FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)",
                     new String[] { etu.getEmail() });
             while (rset.next()) {
@@ -120,12 +119,8 @@ public class LivresEtudiants {
         
         try {
             Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
-                    + "(SELECT id_et FROM etu WHERE email=?), "
-                    + "(SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?))", 
-                    new String[] {
-                            etu.getEmail(),
-                            titre, auteur
-                    });
+                    + "(SELECT id_et FROM etu WHERE email=?), ?)",
+                    new String[] { etu.getEmail(), id_liv });
         } catch (SQLException e) {
         }
         return true;
@@ -142,14 +137,10 @@ public class LivresEtudiants {
         }
     }
     
-    public static void supprimerReservation(Etudiant etu, String titre, String auteur) {
+    public static void supprimerReservation(Etudiant etu, String id) {
         try {
             Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) "
-                    + "AND id_liv = (SELECT id_liv FROM livre WHERE titre = ? AND auteur = ?)",
-                    new String[] {
-                            etu.getEmail(),
-                            titre, auteur
-                    });
+                    + "AND id_liv = ?", new String[] { etu.getEmail(), id });
         } catch (SQLException e) {
         }
     }
