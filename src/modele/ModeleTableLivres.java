@@ -51,6 +51,54 @@ public class ModeleTableLivres extends DefaultTableModel{
 		String[] colName = new String[] {"Titre","Auteur","Exemplaire"};
 		setColumnIdentifiers(colName);
 	}
+	
+    public ModeleTableLivres(boolean exclureEmprunte, String filtreTitre, String filtreAuteur) {
+        setColumnCount(nCol);
+        setRowCount(nRow);
+        
+        
+        ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
+        ArrayList<String> arrayAuteurs = new ArrayList<String>();
+        ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
+        
+        String sql = "SELECT * FROM livre";
+        int nb = (filtreTitre.isBlank() ? 0 : 1) + (filtreAuteur.isBlank() ? 0 : 1);
+        int i = 0;
+        String[] params = new String[nb];
+        
+        if (!filtreTitre.isBlank()) {
+            sql += " WHERE titre LIKE ?";
+            params[i] = "%" + filtreTitre + "%";
+            i++;
+        }
+        
+        if(!filtreAuteur.isBlank()) {
+            if (!filtreTitre.isBlank()) sql += " AND ";
+            else sql += " WHERE ";
+            sql += " auteur LIKE ?";
+            params[i] = "%" + filtreAuteur + "%"; 
+        }
+
+        try {
+            ResultSet result = Connexion.executeQuery(sql, params);
+            while(result.next()) {
+                arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
+                arrayAuteurs.add(result.getString(3));
+                arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), exclureEmprunte));
+            }
+        }catch(SQLException e) {
+            System.out.println(e);  
+        }
+        
+        JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
+        String[] auteurs = arrayAuteurs.toArray(new String[0]);
+        Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
+        setAllValue(titres,auteurs,exemplaire);
+        
+        
+        String[] colName = new String[] {"Titre","Auteur","Exemplaire"};
+        setColumnIdentifiers(colName);
+    }
 
 	
 	/** Methode pour changer toute les lignes, chaque liste doivent faire la m�me tailles, sinon les �l�ments de trop ne seront pas afficher
