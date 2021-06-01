@@ -232,7 +232,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
-        LivresEtudiants.supprimerReservation(getEtuSelectionne(), livre.getTitre(), livre.getAuteur());
+        LivresEtudiants.supprimerReservation(getEtuSelectionne(), String.valueOf(livre.getId()));
         mettreAJourLivres();
     }
     

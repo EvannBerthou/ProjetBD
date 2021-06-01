@@ -83,7 +83,7 @@ public class PanelEtudiant extends JPanel implements ActionListener, UpdateListe
             new PopupAjoutReservation(etu, this);
         } else if (e.getSource() == supprimerBouton) {
             Livre livre = listeReservations.getSelectedValue();
-            LivresEtudiants.supprimerReservation(etu, livre.getTitre(), livre.getAuteur());
+            LivresEtudiants.supprimerReservation(etu, String.valueOf(livre.getId()));
             mettreAJourLivres();
         }
     }

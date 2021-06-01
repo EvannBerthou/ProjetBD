@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
 import modele.Etudiant;
+import modele.JTableLivre;
 import modele.UpdateListe;
 import utils.LivresEtudiants;
 
@@ -32,10 +33,9 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
 
 	public void actionPerformed(ActionEvent e) {
 		int row = tableLivres.getSelectedRow();
-		String titre = tableLivres.getValueAt(row, 0).toString();
-		String auteur = tableLivres.getValueAt(row, 1).toString();
-
-		if (LivresEtudiants.ReserverLivre(etu, titre, auteur) == false) {
+		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row, 0);
+		String id = String.valueOf(livre.getId());
+		if (LivresEtudiants.ReserverLivre(etu, id) == false) {
 			JOptionPane.showMessageDialog(null, "Erreur dans la réservation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 		}
 		
