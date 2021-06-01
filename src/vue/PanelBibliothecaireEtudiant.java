@@ -13,21 +13,16 @@ import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 
 import modele.Connexion;
 import modele.Etudiant;
 import modele.Livre;
-import modele.ModeleTableLivres;
 import modele.UpdateListe;
 import utils.Bouton;
 import utils.LivresEtudiants;
@@ -139,6 +134,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         case "supprimer-emprunt": supprimerEmprunt(); break;
         case "supprimer-reservation": supprimerReservation(); break;
         case "supprimer-etudiant": supprimerEtudiant(); break;
+        case "relance": relancerLivre(); break;
         }
     }
     
@@ -243,6 +239,14 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         getEtuSelectionne().supprimer();
         etuSelectionne = null;
         mettreAJourListeEtudiants();
+        mettreAJourLivres();
+    }
+    
+    private void relancerLivre() {
+        Livre livre = listeEmprunts.getSelectedValue();
+        if (livre == null) return;
+        
+        LivresEtudiants.relancerLivre(etuSelectionne, livre);
         mettreAJourLivres();
     }
 

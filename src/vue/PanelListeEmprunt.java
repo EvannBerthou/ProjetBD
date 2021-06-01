@@ -1,6 +1,7 @@
 package vue;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -21,7 +22,13 @@ public class PanelListeEmprunt extends JPanel {
         JButton supprimerEmpruntBouton = new JButton("Supprimer");
         supprimerEmpruntBouton.setActionCommand("supprimer-emprunt");
         supprimerEmpruntBouton.addActionListener(listener);
-        add(supprimerEmpruntBouton, BorderLayout.SOUTH);
+        JButton relanceBouton = new JButton("Relancer");
+        relanceBouton.setActionCommand("relance");
+        relanceBouton.addActionListener(listener);
+        JPanel panelBoutons = new JPanel(new GridLayout(1,2));
+        panelBoutons.add(relanceBouton);
+        panelBoutons.add(supprimerEmpruntBouton);
+        add(panelBoutons, BorderLayout.SOUTH);
     }
     
 }

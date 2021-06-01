@@ -151,4 +151,15 @@ public class LivresEtudiants {
         } catch (SQLException e) {
         }
     }
+
+    public static void relancerLivre(Etudiant etu, Livre livre) {
+        System.out.println("relance");
+        try {
+            Connexion.executeUpdate("UPDATE emprunt SET date_retour = "
+                    + "(SELECT (date(date_retour, '+15 day'))) "
+                    + "WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) AND id_ex = ?", 
+                    new String[] { etu.getEmail(), String.valueOf(livre.getExemplaire()) });
+        } catch (SQLException e) {
+        }
+    }
 }
