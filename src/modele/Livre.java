@@ -8,16 +8,25 @@ public class Livre {
     private String titre;
     private String auteur;
     private int exemplaire;
+    private Integer tempsRestant;
     
-    public Livre(int _id, String _titre, String _auteur, int _ex) {
+    public Livre(int _id, String _titre, String _auteur, int _ex, Integer _tempsRestant) {
         this.id = _id;
         this.titre = _titre;
         this.auteur = _auteur;
         this.exemplaire = _ex;
+        this.tempsRestant = _tempsRestant;
     }
     
     public String toString() {
-        return getTitre() + " - " + getAuteur();
+        String str = getTitre() + " - " + getAuteur();
+        
+        if (tempsRestant >= 0) {
+            str += "(" + String.valueOf(tempsRestant) + " jours restants)";
+        } else {
+            str += "(" + String.valueOf(-tempsRestant) + " jours de retard)";
+        }
+        return str;
     }
 
     public int getId() {
@@ -36,13 +45,16 @@ public class Livre {
         return titre;
     }
     
+    public int getTempsRestant() {
+        return tempsRestant;
+    }
+    
     public static int nbExemplaire(String livId, boolean exclureEmprunts) {
         try {
             if (exclureEmprunts) {
                 String sql = "SELECT a.num - b.num FROM "
                         + "(SELECT COUNT(*) num FROM exemplaire WHERE id_liv = ?) a, "
                         + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b";
-                        //+ "(SELECT COUNT(*) num FROM reserv WHERE id_liv = ?) c";
                 return Connexion.executeQuery(sql, new String[] { livId, livId }).getInt(1);
             } else {
 
@@ -54,14 +66,5 @@ public class Livre {
         }
 
         return 0;
-    }
-
-    public static String getIdByTitre(String titre) {
-        try {
-            return Connexion.executeQuery("SELECT id_liv FROM livre WHERE titre = ?", new String[] { titre }).getString(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 }

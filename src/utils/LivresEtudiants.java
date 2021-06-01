@@ -15,15 +15,17 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT livre.id_liv, titre,auteur, exemplaire.id_ex FROM exemplaire, livre, etu, emprunt " +
-                    "WHERE emprunt.id_ex = exemplaire.id_ex AND exemplaire.id_liv = livre.id_liv " 
+                    "SELECT livre.id_liv, titre,auteur, exemplaire.id_ex, "
+                    + "(julianday(date_retour) - julianday(date('now'))) "
+                    + "FROM exemplaire, livre, etu, emprunt " 
+                    + "WHERE emprunt.id_ex = exemplaire.id_ex AND exemplaire.id_liv = livre.id_liv " 
                             + "AND emprunt.id_et = etu.id_et AND etu.email = ?", 
                     new String[] {
                             etu.getEmail()
                     });
             ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), rset.getInt(4));
+                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), rset.getInt(4), rset.getInt(5));
                 livres.add(livre);
             }
             
@@ -38,15 +40,21 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT livre.id_liv,titre,auteur FROM livre, etu, reserv " +
-                    "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ?", 
+                    "SELECT livre.id_liv,titre,auteur, (julianday(date_fin_res) - julianday(date('now'))) "
+                    + "FROM livre, etu, reserv "
+                    + "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ? "
+                    + "AND (julianday(date_fin_res) - julianday(date('now'))) >= 0",
                     new String[] {
                             etu.getEmail()
                     });
             ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(2), -1);
-                livres.add(livre);
+                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), -1, rset.getInt(4));
+                if (livre.getTempsRestant() < 0) {
+                    supprimerReservation(etu, rset.getString(1));
+                } else {
+                    livres.add(livre);
+                }
             }
             
             return (Livre[]) livres.toArray(new Livre[livres.size()]);
@@ -68,15 +76,12 @@ public class LivresEtudiants {
         return 0;
     }
     
-    //TODO: Remplacer nomLivre et auteurLivre par un objet de la classe Livre
     public static boolean EmprunterLivre(Etudiant etu, String id_ex) {
         int livresEmpruntes = nbLivreEmprunte(etu);
         if (livresEmpruntes >= 5) {
             return false;
         }
         
-        //TODO: L'id_ex ne doit pas être choisis tout seul mais par l'utilisateur afin de pouvoir suivre qui emprunte
-        // quel exemplaire.
         try {
             Connexion.executeUpdate("INSERT INTO emprunt (id_et, id_ex) VALUES ("
                     + "(SELECT id_et FROM etu WHERE email=?), ?)",  
@@ -90,7 +95,9 @@ public class LivresEtudiants {
     
     private static int nbLivreReserve(Etudiant etu) {
         try {
-            ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", new String[] {etu.getEmail()});
+            ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM reserv "
+                    + "WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) ",
+                    new String[] {etu.getEmail()});
             if (rset.next()) { // Si un résultat à été renvoyé
                 return rset.getInt(1);
             }

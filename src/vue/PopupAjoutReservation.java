@@ -2,9 +2,11 @@ package vue;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 import modele.Etudiant;
 import modele.JTableLivre;
+import modele.ModeleTableLivres;
 import modele.UpdateListe;
 import utils.LivresEtudiants;
 
@@ -32,14 +34,18 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
     }
 
 	public void actionPerformed(ActionEvent e) {
-		int row = tableLivres.getSelectedRow();
-		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row, 0);
-		String id = String.valueOf(livre.getId());
-		if (LivresEtudiants.ReserverLivre(etu, id) == false) {
-			JOptionPane.showMessageDialog(null, "Erreur dans la réservation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-		}
-		
-		parent.mettreAJourLivres();
-		dispose();
+	    if (e.getSource() == rechercheBouton) {
+	        tableLivres.setModel(new ModeleTableLivres(true, tfTitre.getText(), tfAuteur.getText()));
+	    } else {
+	        int row = tableLivres.getSelectedRow();
+	        JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row, 0);
+	        String id = String.valueOf(livre.getId());
+	        if (LivresEtudiants.ReserverLivre(etu, id) == false) {
+	            JOptionPane.showMessageDialog(null, "Erreur dans la réservation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+	        }
+
+	        parent.mettreAJourLivres();
+	        dispose();
+	    }
 	}
 }

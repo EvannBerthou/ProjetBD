@@ -19,6 +19,9 @@ import modele.ModeleTableLivres;
 public abstract class PopupLivreEtudiant extends JDialog implements ActionListener {
     
     JTable tableLivres;
+    JButton rechercheBouton = new JButton("Rechercher");
+    JTextField tfTitre = new JTextField(10);
+    JTextField tfAuteur = new JTextField(10);
     
     public PopupLivreEtudiant(Etudiant etu) {
         if (etu == null) {
@@ -29,9 +32,18 @@ public abstract class PopupLivreEtudiant extends JDialog implements ActionListen
         setLayout(new BorderLayout());
 
         JPanel panelNord = new JPanel();
-        panelNord.add(new JLabel("Titre"));
-        panelNord.add(new JTextField(20));
-        panelNord.add(new JButton("Rechercher"));
+        JPanel titre = new JPanel();
+        titre.add(new JLabel("Titre"));
+        titre.add(tfTitre);
+
+        JPanel auteur = new JPanel();
+        auteur.add(new JLabel("Auteur"));
+        auteur.add(tfAuteur);
+        
+        panelNord.add(titre);
+        panelNord.add(auteur);
+        panelNord.add(rechercheBouton);
+        rechercheBouton.addActionListener(this);
 
 
         tableLivres = new JTable(new ModeleTableLivres(true));
@@ -51,6 +63,6 @@ public abstract class PopupLivreEtudiant extends JDialog implements ActionListen
 
         setVisible(true);
         setBackground(java.awt.Color.red);
-        setSize(500, 400);
+        setSize(600, 600);
     }
 }
