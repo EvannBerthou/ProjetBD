@@ -55,7 +55,6 @@ public class Livre {
                 String sql = "SELECT a.num - b.num FROM "
                         + "(SELECT COUNT(*) num FROM exemplaire WHERE id_liv = ?) a, "
                         + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b";
-                        //+ "(SELECT COUNT(*) num FROM reserv WHERE id_liv = ?) c";
                 return Connexion.executeQuery(sql, new String[] { livId, livId }).getInt(1);
             } else {
 
@@ -67,14 +66,5 @@ public class Livre {
         }
 
         return 0;
-    }
-
-    public static String getIdByTitre(String titre) {
-        try {
-            return Connexion.executeQuery("SELECT id_liv FROM livre WHERE titre = ?", new String[] { titre }).getString(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 }

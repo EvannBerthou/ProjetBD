@@ -13,8 +13,7 @@ create table etu(
 );
 
 create table livre (
-	id_liv int primary key not null,
-	titre varchar(255) not null,
+	id_liv int primary key not null, titre varchar(255) not null,
 	auteur varchar(255) not null
 );
 
@@ -35,7 +34,7 @@ create table emprunt (
 	id_et int references etu(id_et) not null,
 	id_ex int references exemplaire(id_ex) not null,
 	date_emp date default (date('now')),
-	date_retour date default (date('now', '+5 day')) not null,
+	date_retour date default (date('now', '+15 day')) not null,
 	primary key (id_et,id_ex,date_emp)
 );
 
