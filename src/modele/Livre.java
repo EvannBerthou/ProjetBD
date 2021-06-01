@@ -10,7 +10,7 @@ public class Livre {
     private int exemplaire;
     private Integer tempsRestant;
     
-    public Livre(int _id, String _titre, String _auteur, int _ex, int _tempsRestant) {
+    public Livre(int _id, String _titre, String _auteur, int _ex, Integer _tempsRestant) {
         this.id = _id;
         this.titre = _titre;
         this.auteur = _auteur;
@@ -20,6 +20,7 @@ public class Livre {
     
     public String toString() {
         String str = getTitre() + " - " + getAuteur();
+        
         if (tempsRestant >= 0) {
             str += "(" + String.valueOf(tempsRestant) + " jours restants)";
         } else {

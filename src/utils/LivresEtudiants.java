@@ -40,14 +40,15 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT livre.id_liv,titre,auteur FROM livre, etu, reserv " +
-                    "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ?", 
+                    "SELECT livre.id_liv,titre,auteur, (julianday(date_fin_res) - julianday(date('now'))) "
+                    + "FROM livre, etu, reserv "
+                    + "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ?",
                     new String[] {
                             etu.getEmail()
                     });
             ArrayList<Livre> livres = new ArrayList<Livre>();
             while (rset.next()) {
-                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(2), -1, 0);
+                Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), -1, rset.getInt(4));
                 livres.add(livre);
             }
             
