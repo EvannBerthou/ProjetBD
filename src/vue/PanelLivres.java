@@ -296,15 +296,8 @@ public class PanelLivres extends JPanel implements ActionListener{
 		}
 		int row = tableLivres.getSelectedRow();
 		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row,0);
-		
-		try {
-			ResultSet result = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv=" + livre.getId() + " EXCEPT SELECT id_ex FROM emprunt WHERE id_ex IN (SELECT id_ex FROM exemplaire where id_liv=" + livre.getId() + ")");
-			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_ex =" + result.getInt(1));
-		}catch(SQLException e) {
-			System.out.println(e);	
-		}
-		
-		reload();
+
+		new PopupSupprExemplaire(livre.getId());
 	}
 	
 	@Override
