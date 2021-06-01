@@ -24,7 +24,7 @@ public class PopupAjoutEmprunt extends PopupLivreEtudiant {
 	PanelBibliothecaireEtudiant pbe;
 
 	public PopupAjoutEmprunt(PanelBibliothecaireEtudiant _pbe) {
-		super(_pbe);
+		super(_pbe.getEtuSelectionne());
 		this.pbe = _pbe;
 		Etudiant etu = pbe.getEtuSelectionne();
 		if (etu != null) {

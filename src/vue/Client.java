@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import modele.Connexion;
+import modele.Etudiant;
 
 public class Client extends JFrame {
 	private static final long serialVersionUID = -978164249698330936L;
@@ -15,11 +16,13 @@ public class Client extends JFrame {
 	    //"jdbc:oracle:thin:@madere:1521:info"
 		new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");
 
-		PanelBibliothecaireEtudiant panelEtudiant = new PanelBibliothecaireEtudiant();
+        PanelBibliothecaireEtudiant panelBibliothecaire = new PanelBibliothecaireEtudiant();
+		PanelEtudiant panelEtudiant = new PanelEtudiant(new Etudiant("Dupont","Tom","mail1@mail.com"));
 		PanelLivres panelLivres = new PanelLivres();
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Etudiant", null, panelEtudiant, "Gestion des étudiants");
+        tabbedPane.addTab("Etudiant", null, panelEtudiant, "Gestion des emprunts et réservations");
+        tabbedPane.addTab("Bibliothécaire", null, panelBibliothecaire, "Gestion des étudiants");
         tabbedPane.addTab("Livres", null, panelLivres, "Gestion des livres");
         
 		setContentPane(tabbedPane);

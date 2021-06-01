@@ -55,7 +55,7 @@ public class PopupChoixExemplaire extends JDialog implements ActionListener {
                         + " a déjà réservé 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-        pbe.mettreAJoutEmpruntsReservations();
+        pbe.mettreAJourLivres();
         dispose();
     }
     

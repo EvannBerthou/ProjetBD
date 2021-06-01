@@ -20,8 +20,7 @@ public abstract class PopupLivreEtudiant extends JDialog implements ActionListen
     
     JTable tableLivres;
     
-    public PopupLivreEtudiant(PanelBibliothecaireEtudiant pbe) {
-        Etudiant etu = pbe.getEtuSelectionne();
+    public PopupLivreEtudiant(Etudiant etu) {
         if (etu == null) {
             JOptionPane.showMessageDialog(null, "Aucun étudiant sélectionné.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
             return;
