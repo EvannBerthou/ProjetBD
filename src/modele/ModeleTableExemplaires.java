@@ -21,7 +21,8 @@ public class ModeleTableExemplaires extends DefaultTableModel {
         
         try {
             ResultSet rset = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv = ? "
-                    + "AND id_ex NOT IN (SELECT id_ex FROM emprunt)", new String[] {id_liv});
+                    + "AND id_ex NOT IN (SELECT id_ex FROM emprunt) "
+                    + "AND id_liv NOT IN (SELECT id_liv FROM reserv)", new String[] {id_liv});
             while(rset.next()) {             
                 arrayExemplaire.add(rset.getString(1));
             }
