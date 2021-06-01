@@ -25,17 +25,17 @@ create table exemplaire (
 
 create table reserv (
 	id_et int references etu(id_et) not null,
-	date_res date default sysdate not null,
+	date_res date default (date('now')) not null,
 	id_liv int references livre(id_liv) not null,
-	date_fin_res date default sysdate not null,
+	date_fin_res date default (date('now', '+5 day')) not null,
 	primary key (id_et,id_liv,date_res)
 );
 
 create table emprunt (
 	id_et int references etu(id_et) not null,
 	id_ex int references exemplaire(id_ex) not null,
-	date_emp date default sysdate,
-	date_retour date default sysdate, -- + 5,
+	date_emp date default (date('now')),
+	date_retour date default (date('now', '+5 day')) not null,
 	primary key (id_et,id_ex,date_emp)
 );
 

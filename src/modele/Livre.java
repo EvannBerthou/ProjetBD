@@ -8,16 +8,24 @@ public class Livre {
     private String titre;
     private String auteur;
     private int exemplaire;
+    private Integer tempsRestant;
     
-    public Livre(int _id, String _titre, String _auteur, int _ex) {
+    public Livre(int _id, String _titre, String _auteur, int _ex, int _tempsRestant) {
         this.id = _id;
         this.titre = _titre;
         this.auteur = _auteur;
         this.exemplaire = _ex;
+        this.tempsRestant = _tempsRestant;
     }
     
     public String toString() {
-        return getTitre() + " - " + getAuteur();
+        String str = getTitre() + " - " + getAuteur();
+        if (tempsRestant >= 0) {
+            str += "(" + String.valueOf(tempsRestant) + " jours restants)";
+        } else {
+            str += "(" + String.valueOf(-tempsRestant) + " jours de retard)";
+        }
+        return str;
     }
 
     public int getId() {
@@ -34,6 +42,10 @@ public class Livre {
 
     public String getTitre() {
         return titre;
+    }
+    
+    public int getTempsRestant() {
+        return tempsRestant;
     }
     
     public static int nbExemplaire(String livId, boolean exclureEmprunts) {

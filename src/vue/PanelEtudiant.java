@@ -14,6 +14,7 @@ import javax.swing.JScrollPane;
 
 import modele.Etudiant;
 import modele.Livre;
+import modele.LivreRenderer;
 import modele.UpdateListe;
 import utils.LivresEtudiants;
 
@@ -35,7 +36,7 @@ public class PanelEtudiant extends JPanel implements ActionListener, UpdateListe
 
         // Emprunts
         JPanel panelEmprunts = new JPanel(new BorderLayout());
-
+        listeEmprunts.setCellRenderer(new LivreRenderer());
         JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
         panelEmprunts.add(new JLabel("Livres empruntés"), BorderLayout.NORTH);
         panelEmprunts.add(scrollEmprunts, BorderLayout.CENTER);
