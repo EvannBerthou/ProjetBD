@@ -1,40 +1,51 @@
-DROP TABLE IF EXISTS emprunt;
-DROP TABLE IF EXISTS reserv;
-DROP TABLE IF EXISTS exemplaire;
-DROP TABLE IF EXISTS livre;
-DROP TABLE IF EXISTS etu;
+DROP TABLE reserv;
+DROP TABLE emprunt;
+DROP TABLE exemplaire;
+DROP TABLE livre;
+DROP TABLE etu;
+
+DROP SEQUENCE seq_etu;
+DROP SEQUENCE seq_livre;
+DROP SEQUENCE seq_ex;
+CREATE SEQUENCE seq_etu START WITH 1;
+CREATE SEQUENCE seq_livre START WITH 1;
+CREATE SEQUENCE seq_ex START WITH 1;
 
 create table etu(
-	id_et integer primary key autoincrement not null , -- TODO: A CHANGER AVANT DE RENDRE
+	id_et int default seq_etu.nextval not null,
 	prenom varchar(255) not null,
 	nom varchar(255) not null,
 	mdp varchar(255) not null,
-	email varchar(255) not null unique CHECK(email like '%@%.%')
+	email varchar(255) not null unique CHECK(email like '%@%.%'),
+  primary key(id_et)
 );
 
 create table livre (
-	id_liv int primary key not null, titre varchar(255) not null,
-	auteur varchar(255) not null
+	id_liv int default seq_livre.nextval not null, 
+  titre varchar(255) not null,
+	auteur varchar(255) not null,
+  primary key(id_liv)
 );
 
 create table exemplaire (
-	id_ex int primary key not null,
-	id_liv int references livre(id_liv) not null
+	id_ex int default seq_ex.nextval not null,
+	id_liv int references livre(id_liv) not null,
+  primary key(id_ex)
 );
 
 create table reserv (
 	id_et int references etu(id_et) not null,
-	date_res date default (date('now')) not null,
+	date_res date default sysdate not null,
 	id_liv int references livre(id_liv) not null,
-	date_fin_res date default (date('now', '+5 day')) not null,
+	date_fin_res date default sysdate + 5 not null,
 	primary key (id_et,id_liv,date_res)
 );
 
 create table emprunt (
 	id_et int references etu(id_et) not null,
 	id_ex int references exemplaire(id_ex) not null,
-	date_emp date default (date('now')),
-	date_retour date default (date('now', '+15 day')) not null,
+	date_emp date default sysdate,
+	date_retour date default sysdate + 15 not null,
 	primary key (id_et,id_ex,date_emp)
 );
 
@@ -138,18 +149,21 @@ INSERT INTO livre VALUES (97,'Tarpeia, les venins de Rome','Bouchard, Nicolas');
 INSERT INTO livre VALUES (98,'Les Vies multiples d''Amory Clay','Boyd, William');
 INSERT INTO livre VALUES (99,'A mains nues','Barbato, Paola');
 INSERT INTO livre VALUES (100,'Il était une ville','Reverdy, Thomas B.');
-INSERT INTO livre VALUES (101,'Titre1','Auteur1');
 
-INSERT INTO etu VALUES (0, "Tom", "Dupont", "mdp", "mail1@mail.com");
-INSERT INTO etu VALUES (1, "Fabrice", "Dupond", "mdp", "mail2@mail.com");
-INSERT INTO etu VALUES (2, "Kel", "Sunny", "mdp", "mail3@mail.com");
-INSERT INTO etu VALUES (3, "Aubrey", "Mari", "mdp", "mail4@mail.com");
+INSERT INTO etu(prenom, nom, mdp, email) VALUES ('Tom', 'Dupont', 'mdp', 'mail1@mail.com');
+INSERT INTO etu(prenom, nom, mdp, email) VALUES ('Fabrice', 'Dupond', 'mdp', 'mail2@mail.com');
+INSERT INTO etu(prenom, nom, mdp, email) VALUES ('Kel', 'Sunny', 'mdp', 'mail3@mail.com');
+INSERT INTO etu(prenom, nom, mdp, email) VALUES ('Aubrey', 'Mari', 'mdp', 'mail4@mail.com');
 
-INSERT INTO exemplaire VALUES (1, 1);
-INSERT INTO exemplaire VALUES (2, 2);
-INSERT INTO exemplaire VALUES (3, 2);
-INSERT INTO exemplaire VALUES (4, 101);
+INSERT INTO exemplaire(ID_LIV) VALUES (1);
+INSERT INTO exemplaire(ID_LIV) VALUES (2);
+INSERT INTO exemplaire(ID_LIV) VALUES (2);
 
-INSERT INTO emprunt (id_et, id_ex) VALUES (0, 1);
-INSERT INTO emprunt (id_et, id_ex) VALUES (0, 2);
-INSERT INTO emprunt (id_et, id_ex) VALUES (1, 3);
+INSERT INTO emprunt (id_et, id_ex) VALUES (1, 1);
+INSERT INTO emprunt (id_et, id_ex) VALUES (1, 2);
+INSERT INTO emprunt (id_et, id_ex) VALUES (2, 3);
+
+select * from exemplaire;
+select * from emprunt;
+
+UPDATE emprunt SET date_retour = (sysdate - 5) WHERE id_ex = 1;
