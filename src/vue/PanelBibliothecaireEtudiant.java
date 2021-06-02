@@ -72,7 +72,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         JPanel panelListeEtudiants = new JPanel(new BorderLayout());
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
-        // Panel WEST (liste des étudiants)
+        // Panel WEST (liste des Ã©tudiants)
         listeEtudiants = new JList<Etudiant>();
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
@@ -92,13 +92,13 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         });
 
         JScrollPane scrollListeEtudiants = new JScrollPane(listeEtudiants);
-        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste �tudiants", "letu", this), BorderLayout.NORTH);
+        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste étudiants", "letu", this), BorderLayout.NORTH);
         panelListeEtudiants.add(scrollListeEtudiants, BorderLayout.CENTER);
         
         // Panel CENTRE (informations de l'étudiants sélectionné)
         JPanel infos = new JPanel();
         infos.add(textFieldWithName("Nom"));
-        infos.add(textFieldWithName("Pr�nom"));
+        infos.add(textFieldWithName("Prénom"));
         infos.add(textFieldWithName("Email"));
         infos.add(textFieldWithName("Mdp"));
         JButton enrengistrerButton = new JButton("Enrengister");
@@ -154,7 +154,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private void changerEtudiantSelectionne(Etudiant etu) {
         textFields.get("Nom").setText(etu.getNom());
-        textFields.get("Pr�nom").setText(etu.getPrenom());
+        textFields.get("Prénom").setText(etu.getPrenom());
         textFields.get("Email").setText(etu.getEmail());
         etuSelectionne = etu;
         mettreAJourLivres();
@@ -168,7 +168,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         try {
             Connexion.executeUpdate("UPDATE etu SET nom = ?, prenom = ?, email = ? WHERE email = ?", new String[] {
                     textFields.get("Nom").getText(),
-                    textFields.get("Pr�nom").getText(),
+                    textFields.get("Prénom").getText(),
                     textFields.get("Email").getText(),
                     getEtuSelectionne().getEmail()
             });
@@ -242,6 +242,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         etuSelectionne = null;
         mettreAJourListeEtudiants();
         mettreAJourLivres();
+        
+        textFields.get("Nom").setText("");
+        textFields.get("Prénom").setText("");
+        textFields.get("Email").setText("");
     }
     
     private void relancerLivre() {
