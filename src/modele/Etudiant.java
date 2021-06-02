@@ -49,8 +49,7 @@ public class Etudiant {
             Connexion.executeUpdate("DELETE FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", params);
             Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", params);
             Connexion.executeUpdate("DELETE FROM etu WHERE email = ?", params);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
         }
     }
 }

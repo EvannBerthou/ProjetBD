@@ -25,7 +25,7 @@ public abstract class PopupLivreEtudiant extends JDialog implements ActionListen
     
     public PopupLivreEtudiant(Etudiant etu) {
         if (etu == null) {
-            JOptionPane.showMessageDialog(null, "Aucun Ã©tudiant sÃ©lectionnÃ©.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Aucun étudiant sélectionné.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 

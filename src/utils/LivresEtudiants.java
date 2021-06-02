@@ -16,7 +16,7 @@ public class LivresEtudiants {
         try {
             rset = Connexion.executeQuery(
                     "SELECT livre.id_liv, titre,auteur, exemplaire.id_ex, "
-                    + "(julianday(date_retour) - julianday(date('now'))) "
+                    + "ROUND(date_retour - sysdate) "
                     + "FROM exemplaire, livre, etu, emprunt " 
                     + "WHERE emprunt.id_ex = exemplaire.id_ex AND exemplaire.id_liv = livre.id_liv " 
                             + "AND emprunt.id_et = etu.id_et AND etu.email = ?", 
@@ -28,7 +28,7 @@ public class LivresEtudiants {
                 Livre livre = new Livre(rset.getInt(1), rset.getString(2), rset.getString(3), rset.getInt(4), rset.getInt(5));
                 livres.add(livre);
             }
-            
+            rset.close();
             return (Livre[]) livres.toArray(new Livre[livres.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -40,10 +40,10 @@ public class LivresEtudiants {
         ResultSet rset; 
         try {
             rset = Connexion.executeQuery(
-                    "SELECT livre.id_liv,titre,auteur, (julianday(date_fin_res) - julianday(date('now'))) "
+                    "SELECT livre.id_liv,titre,auteur, ROUND(date_fin_res - sysdate) "
                     + "FROM livre, etu, reserv "
                     + "WHERE reserv.id_liv = livre.id_liv AND reserv.id_et = etu.id_et AND etu.email = ? "
-                    + "AND (julianday(date_fin_res) - julianday(date('now'))) >= 0",
+                    + "AND ROUND(date_fin_res - sysdate) >= 0",
                     new String[] {
                             etu.getEmail()
                     });
@@ -56,7 +56,7 @@ public class LivresEtudiants {
                     livres.add(livre);
                 }
             }
-            
+            rset.close();
             return (Livre[]) livres.toArray(new Livre[livres.size()]);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,8 +67,10 @@ public class LivresEtudiants {
     private static int nbLivreEmprunte(Etudiant etu) {
         try {
             ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", new String[] {etu.getEmail()});
-            if (rset.next()) { // Si un résultat à été renvoyé
-                return rset.getInt(1);
+            if (rset.next()) {
+                int res = rset.getInt(1);
+                rset.close();
+                return res;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,7 +90,7 @@ public class LivresEtudiants {
                     new String[] {
                             etu.getEmail(), id_ex
                     });
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
         return true;
     }
@@ -98,9 +100,12 @@ public class LivresEtudiants {
             ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM reserv "
                     + "WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) ",
                     new String[] {etu.getEmail()});
-            if (rset.next()) { // Si un résultat à été renvoyé
-                return rset.getInt(1);
+            if (rset.next()) {
+            	int res = rset.getInt(1);
+                rset.close();
+                return res;
             }
+            rset.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,17 +123,18 @@ public class LivresEtudiants {
                     new String[] { etu.getEmail() });
             while (rset.next()) {
                 if (rset.getString(1).equals(id_liv)) {
+                	rset.close();
                     return false;
                 }
             }
+            rset.close();
         } catch (SQLException e) {
         }
         
         try {
-            Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ("
-                    + "(SELECT id_et FROM etu WHERE email=?), ?)",
+            Connexion.executeUpdate("INSERT INTO reserv (id_et, id_liv) VALUES ((SELECT id_et FROM etu WHERE email = ?), ?)",
                     new String[] { etu.getEmail(), id_liv });
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
         return true;
     }
@@ -140,7 +146,7 @@ public class LivresEtudiants {
                             etu.getEmail(),
                             String.valueOf(exemplaire)
                     });
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
     }
     
@@ -148,18 +154,17 @@ public class LivresEtudiants {
         try {
             Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) "
                     + "AND id_liv = ?", new String[] { etu.getEmail(), id });
-        } catch (SQLException e) {
+        } catch (Exception e) {
         }
     }
 
     public static void relancerLivre(Etudiant etu, Livre livre) {
-        System.out.println("relance");
         try {
             Connexion.executeUpdate("UPDATE emprunt SET date_retour = "
-                    + "(SELECT (date(date_retour, '+15 day'))) "
+                    + "(SELECT (date_retour + 15) FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) AND id_ex = ?) "
                     + "WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) AND id_ex = ?", 
-                    new String[] { etu.getEmail(), String.valueOf(livre.getExemplaire()) });
-        } catch (SQLException e) {
+                    new String[] { etu.getEmail(), String.valueOf(livre.getExemplaire()), etu.getEmail(), String.valueOf(livre.getExemplaire()) });
+        } catch (Exception e) {
         }
     }
 }

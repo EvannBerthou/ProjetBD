@@ -42,7 +42,7 @@ public class PopupAjoutEmprunt extends PopupLivreEtudiant {
 
             String id = String.valueOf(livre.getId());
             if (Livre.nbExemplaire(id, true) == 0) {
-                JOptionPane.showMessageDialog(null, livre.toString() + " ne possÃ¨de plus d'exemplaire disponible", 
+                JOptionPane.showMessageDialog(null, livre.toString() + " ne possède plus d'exemplaire disponible", 
                         "Erreur", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }

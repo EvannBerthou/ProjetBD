@@ -52,7 +52,7 @@ public class PopupChoixExemplaire extends JDialog implements ActionListener {
         if (selectedEx != null) {
             if (LivresEtudiants.EmprunterLivre(etu, selectedEx) == false) {
                 JOptionPane.showMessageDialog(null, etu.toString() 
-                        + " a d√©j√† r√©serv√© 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+                        + " a dÈj‡†rÈservÈ 5 livres.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
             }
         }
         pbe.mettreAJourLivres();

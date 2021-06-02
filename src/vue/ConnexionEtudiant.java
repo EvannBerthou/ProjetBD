@@ -86,29 +86,32 @@ public class ConnexionEtudiant extends JPanel implements ActionListener {
             PanelLivres panelLivres = new PanelLivres();
 
             JTabbedPane tabbedPane = new JTabbedPane();
-            tabbedPane.addTab("BibliothÃ©caire", null, panelBibliothecaire, "Gestion des Ã©tudiants");
+            tabbedPane.addTab("Bibliothécaire", null, panelBibliothecaire, "Gestion des étudiants");
             tabbedPane.addTab("Livres", null, panelLivres, "Gestion des livres");
             client.setContentPane(tabbedPane);
+            client.setSize(1000, 500);
         } else {
             String[] parts = textFieldId.getText().split("\\.");
             if (parts.length != 2) return;
             String nom = parts[0];
             String prenom = parts[1];
             try {
-                ResultSet rset = Connexion.executeQuery("SELECT COUNT(*), prenom, nom, email FROM etu "
-                        + "WHERE LOWER(nom) = ? AND LOWER(prenom) = ? AND LOWER(mdp) = ?",
+                ResultSet rset = Connexion.executeQuery("SELECT prenom, nom, email FROM etu "
+                        + "WHERE LOWER(nom) = ? AND LOWER(prenom) = ? AND mdp = ?",
                         new String[] { nom, prenom, textFieldPwd.getText() });
-                if (rset.getInt(1) == 1) {
-                    Etudiant etu = new Etudiant(rset.getString(2), rset.getString(3), rset.getString(4));
+                if (rset.next()) {
+                    Etudiant etu = new Etudiant(rset.getString(1), rset.getString(2), rset.getString(3));
+                    rset.close();
                     PanelEtudiant panelEtudiant = new PanelEtudiant(etu);
                     client.setContentPane(panelEtudiant);
+                    client.setSize(1000, 500);
                 } else {
                     System.out.println("Compte inexistant");
                 }
+                rset.close();
             } catch (SQLException e1) {
             }
         }
-        client.setSize(1000, 500);
         client.setVisible(true);
     }    
 }

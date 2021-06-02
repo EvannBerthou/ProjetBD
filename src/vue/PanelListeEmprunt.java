@@ -17,7 +17,7 @@ public class PanelListeEmprunt extends JPanel {
     public PanelListeEmprunt(JList listeEmprunts, ActionListener listener) {
         setLayout(new BorderLayout());
         JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);
-        add(Bouton.JLabelWithButton("Livres empruntÃ©s", "lemp", listener), BorderLayout.NORTH);
+        add(Bouton.JLabelWithButton("Livres empruntés", "lemp", listener), BorderLayout.NORTH);
         add(scrollEmprunts, BorderLayout.CENTER);
         JButton supprimerEmpruntBouton = new JButton("Supprimer");
         supprimerEmpruntBouton.setActionCommand("supprimer-emprunt");

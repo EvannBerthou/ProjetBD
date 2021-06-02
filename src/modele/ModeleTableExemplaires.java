@@ -26,6 +26,7 @@ public class ModeleTableExemplaires extends DefaultTableModel {
             while(rset.next()) {             
                 arrayExemplaire.add(rset.getString(1));
             }
+            rset.close();
         }catch(SQLException e) {
             System.out.println(e);  
         }

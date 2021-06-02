@@ -41,9 +41,8 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
 	        JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row, 0);
 	        String id = String.valueOf(livre.getId());
 	        if (LivresEtudiants.ReserverLivre(etu, id) == false) {
-	            JOptionPane.showMessageDialog(null, "Erreur dans la rÃ©servation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+	            JOptionPane.showMessageDialog(null, "Erreur dans la réservation du livre", "Erreur", JOptionPane.INFORMATION_MESSAGE);
 	        }
-
 	        parent.mettreAJourLivres();
 	        dispose();
 	    }

@@ -31,13 +31,13 @@ public class ModeleTableRetard extends DefaultTableModel{
 		
 		try {
 		    //TODO: Marche pour SQLite mais pas pour oracle
-			ResultSet result = Connexion.executeQuery("SELECT prenom,nom,email,titre from emprunt e, etu, livre l,exemplaire ex where etu.id_et = e.id_et AND l.id_liv = ex.id_liv AND ex.id_ex = e.id_ex AND e.date_retour <  DATE()"); 
+			ResultSet result = Connexion.executeQuery("SELECT prenom,nom,email,titre from emprunt e, etu, livre l,exemplaire ex where etu.id_et = e.id_et AND l.id_liv = ex.id_liv AND ex.id_ex = e.id_ex AND e.date_retour <  sysdate"); 
 			while(result.next()) {
 				arrayEtudiant.add(result.getString(1) + " " + result.getString(2));
 				arrayEmail.add(result.getString(3));
 				arrayTitres.add(result.getString(4));
 			}
-			
+			result.close();
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}

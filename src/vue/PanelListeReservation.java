@@ -16,7 +16,7 @@ public class PanelListeReservation extends JPanel {
     public PanelListeReservation(JList listeReservations, ActionListener listener) {
         setLayout(new BorderLayout());
         JScrollPane scrollReservations = new JScrollPane(listeReservations);
-        add(Bouton.JLabelWithButton("Livres rÃ©servÃ©s", "lres", listener), BorderLayout.NORTH);
+        add(Bouton.JLabelWithButton("Livres réservés", "lres", listener), BorderLayout.NORTH);
         add(scrollReservations, BorderLayout.CENTER);
         JButton supprimerReservBouton = new JButton("Supprimer");
         supprimerReservBouton.setActionCommand("supprimer-reservation");

@@ -55,16 +55,27 @@ public class Livre {
                 String sql = "SELECT a.num - b.num FROM "
                         + "(SELECT COUNT(*) num FROM exemplaire WHERE id_liv = ?) a, "
                         + "(SELECT COUNT(*) num FROM emprunt,exemplaire WHERE emprunt.id_ex = exemplaire.id_ex AND id_liv = ?) b";
-                return Connexion.executeQuery(sql, new String[] { livId, livId }).getInt(1);
-            } else {
+                ResultSet rset = Connexion.executeQuery(sql, new String[] { livId, livId });
 
+                if (rset.next()) {
+                	int res = rset.getInt(1);
+                	rset.close();
+                	return res;
+                }
+                rset.close();
+            } else {
                 String sql = "SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ";
-                return Connexion.executeQuery(sql, new String[] { livId }).getInt(1);
+                ResultSet rset = Connexion.executeQuery(sql, new String[] { livId });
+                if (rset.next()) {
+                	int res = rset.getInt(1);
+                	rset.close();
+                	return res;
+                }
+                rset.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return 0;
+        return -1;
     }
 }

@@ -58,7 +58,7 @@ public class PopupNouveauEtudiant extends JDialog implements ActionListener {
         String mail = tfMail.getText();
         String mdp = tfMdp.getText();
 
-        if (nom.isBlank() || prenom.isBlank() || mail.isBlank() || mdp.isBlank())
+        if (nom.isEmpty() || prenom.isEmpty()|| mail.isEmpty() || mdp.isEmpty())
             return null;
 
         Etudiant etu = new Etudiant(nom, prenom, mail, mdp);
@@ -70,13 +70,13 @@ public class PopupNouveauEtudiant extends JDialog implements ActionListener {
         if (e.getSource() == ajouterBouton) {
             Etudiant etu = getEtudiant();
             
-            String message = "Etudiant " + etu.getNom() + " " + etu.getPrenom() + " ajoutÃ©.";
-            String titre = "SuccÃ¨s";
+            String message = "Etudiant " + etu.getNom() + " " + etu.getPrenom() + " ajouté.";
+            String titre = "Succès";
             
             if (etu != null && pbe.ajouterEtudiant(etu)) {
                 dispose();
             } else {
-                message = "Erreur dans l'ajout de l'Ã©tudiant.";
+                message = "Erreur dans l'ajout de l'étudiant.";
                 titre = "Erreur";
             }
             

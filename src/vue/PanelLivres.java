@@ -187,12 +187,13 @@ public class PanelLivres extends JPanel implements ActionListener{
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT * FROM livre order by titre asc");
-			while(result.next()) {
-				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
-				arrayAuteurs.add(result.getString(3));
-				arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), false));
+			ResultSet rset = Connexion.executeQuery("SELECT * FROM livre order by titre asc");
+			while(rset.next()) {
+				arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
+				arrayAuteurs.add(rset.getString(3));
+				arrayExemplaire.add(Livre.nbExemplaire(rset.getString(1), false));
 			}
+			rset.close();
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}
@@ -213,14 +214,19 @@ public class PanelLivres extends JPanel implements ActionListener{
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT * FROM Livre WHERE titre LIKE '%" + titreField.getText() + "%' ORDER BY titre ASC");
-			while(result.next()) {
-				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
-				arrayAuteurs.add(result.getString(3));
-				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv ="+result.getString(1));
-				arrayExemplaire.add(exmplaire.getInt(1));
+			ResultSet rset = Connexion.executeQuery("SELECT * FROM Livre WHERE lower(titre) LIKE lower(?) ORDER BY titre ASC", new String[] { "%" + titreField.getText() + "%"});
+			while(rset.next()) {
+				arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
+				arrayAuteurs.add(rset.getString(3));
 			}
-			
+			rset.close();
+			for (JTableLivre livre : arrayTitres) {
+				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ", new String[] { String.valueOf(livre.getId()) });
+				if (exmplaire.next()) {
+					arrayExemplaire.add(exmplaire.getInt(1));
+				}
+				exmplaire.close();
+			}
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}
@@ -242,12 +248,18 @@ public class PanelLivres extends JPanel implements ActionListener{
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT * FROM Livre WHERE auteur LIKE '%" + auteurField.getText() + "%' ORDER BY titre ASC");
-			while(result.next()) {
-				arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
-				arrayAuteurs.add(result.getString(3));
-				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv ="+result.getString(1));
-				arrayExemplaire.add(exmplaire.getInt(1));
+			ResultSet rset = Connexion.executeQuery("SELECT * FROM Livre WHERE lower(auteur) LIKE lower(?) ORDER BY titre ASC", new String[] { "%" + auteurField.getText() + "%"});
+			while(rset.next()) {
+				arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
+				arrayAuteurs.add(rset.getString(3));
+			}			
+			rset.close();
+			for (JTableLivre livre : arrayTitres) {
+				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ", new String[] { String.valueOf(livre.getId()) });
+				if (exmplaire.next()) {
+					arrayExemplaire.add(exmplaire.getInt(1));
+				}
+				exmplaire.close();
 			}
 		}catch(SQLException e) {
 			System.out.println(e);	
@@ -273,14 +285,14 @@ public class PanelLivres extends JPanel implements ActionListener{
 		JTableLivre livre = (JTableLivre) tableLivres.getValueAt(row,0);
 		
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv=" + livre.getId());
-			while(result.next()) {
-				Connexion.executeUpdate("DELETE FROM emprunt WHERE id_ex="+ result.getString(1));
+			ResultSet rset = Connexion.executeQuery("SELECT id_ex FROM exemplaire WHERE id_liv=" + livre.getId());
+			while(rset.next()) {
+				Connexion.executeUpdate("DELETE FROM emprunt WHERE id_ex= ?", new String[] {rset.getString(1)});
 			}
-			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_liv=" + livre.getId());
-			Connexion.executeUpdate("DELETE FROM livre WHERE id_liv=" + livre.getId());
-		}catch(SQLException e) {
-			System.out.println(e);	
+			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_liv = ?", new String[]  {String.valueOf(livre.getId())});
+			Connexion.executeUpdate("DELETE FROM livre WHERE id_liv = ?", new String[] { String.valueOf(livre.getId())});
+			rset.close();
+		}catch(Exception e) {
 		}
 		
 		reload();

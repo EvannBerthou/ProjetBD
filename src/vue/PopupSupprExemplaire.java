@@ -74,6 +74,7 @@ public class PopupSupprExemplaire extends JDialog implements ActionListener {
 			while(rset.next()) {
 				arrayExemplaire.add(rset.getString(1));
 			}
+			rset.close();
 		}catch(SQLException e) {
 			System.out.println(e);  
 		}
@@ -83,6 +84,9 @@ public class PopupSupprExemplaire extends JDialog implements ActionListener {
 	}
 
 	public void supprimer(){
+		if(tableLivresExemplaire.getSelectedRow() == -1){
+			return;
+		}
 		try {
 			Connexion.executeUpdate("DELETE FROM exemplaire WHERE id_ex = "+ tableLivresExemplaire.getValueAt( tableLivresExemplaire.getSelectedRow(),0));
 		}catch(SQLException e) {

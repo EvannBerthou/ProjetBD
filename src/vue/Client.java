@@ -1,7 +1,9 @@
 package vue;
 
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+
 import javax.swing.JFrame;
 
 import modele.Connexion;
@@ -11,8 +13,9 @@ public class Client extends JFrame {
 	
 	public Client() throws ClassNotFoundException, SQLException, IOException {
 		super("Titre");
-	    //"jdbc:oracle:thin:@madere:1521:info"
-		new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		new Connexion("jdbc:oracle:thin:@madere:1521:info", "eberthou", "azerty");
+		//new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");
 
 		ConnexionEtudiant connexion = new ConnexionEtudiant(this);
         

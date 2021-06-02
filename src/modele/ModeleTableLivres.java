@@ -38,6 +38,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 				arrayAuteurs.add(result.getString(3));
 				arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), exclureEmprunte));
 			}
+			result.close();
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}
@@ -62,30 +63,31 @@ public class ModeleTableLivres extends DefaultTableModel{
         ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
         
         String sql = "SELECT * FROM livre";
-        int nb = (filtreTitre.isBlank() ? 0 : 1) + (filtreAuteur.isBlank() ? 0 : 1);
+        int nb = (filtreTitre.isEmpty() ? 0 : 1) + (filtreAuteur.isEmpty() ? 0 : 1);
         int i = 0;
         String[] params = new String[nb];
         
-        if (!filtreTitre.isBlank()) {
-            sql += " WHERE titre LIKE ?";
+        if (!filtreTitre.isEmpty()) {
+            sql += " WHERE lower(titre) LIKE lower(?)";
             params[i] = "%" + filtreTitre + "%";
             i++;
         }
         
-        if(!filtreAuteur.isBlank()) {
-            if (!filtreTitre.isBlank()) sql += " AND ";
+        if(!filtreAuteur.isEmpty()) {
+            if (!filtreTitre.isEmpty()) sql += " AND ";
             else sql += " WHERE ";
-            sql += " auteur LIKE ?";
+            sql += " lower(auteur) LIKE (?)";
             params[i] = "%" + filtreAuteur + "%"; 
         }
 
         try {
-            ResultSet result = Connexion.executeQuery(sql, params);
-            while(result.next()) {
-                arrayTitres.add(new JTableLivre(result.getInt(1),result.getString(2)));
-                arrayAuteurs.add(result.getString(3));
-                arrayExemplaire.add(Livre.nbExemplaire(result.getString(1), exclureEmprunte));
+            ResultSet rset = Connexion.executeQuery(sql, params);
+            while(rset.next()) {
+                arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
+                arrayAuteurs.add(rset.getString(3));
+                arrayExemplaire.add(Livre.nbExemplaire(rset.getString(1), exclureEmprunte));
             }
+            rset.close();
         }catch(SQLException e) {
             System.out.println(e);  
         }
@@ -129,4 +131,13 @@ public class ModeleTableLivres extends DefaultTableModel{
 	public boolean isCellEditable(int row, int column) {
 	       return false;
 	}
+	
+	public Class getColumnClass(int column) {
+        switch (column) {
+            case 2:
+                return Integer.class;
+            default:
+                return String.class;
+        }
+    }
 }

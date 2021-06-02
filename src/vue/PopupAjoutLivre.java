@@ -168,14 +168,10 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 	public void ajoutExemplaire() {
 		int id = (livreField.getItemAt(livreField.getSelectedIndex())).getId();
 		try {
-			ResultSet max = Connexion.executeQuery("SELECT MAX(id_ex) FROM exemplaire");
-			int index = max.getInt(1) + 1;
 			for(int i=0; i<(int)nombresField.getValue();i++) {
-				Connexion.executeUpdate("INSERT into exemplaire values(" + index + "," + id + ")");
-				index++;
+				Connexion.executeUpdate("INSERT into exemplaire(id_liv) values(?)", new String[] {String.valueOf(id)});
 			}
-		}catch(SQLException e) {
-			System.out.println(e);
+		}catch(Exception e) {
 		}
 		
 		livreField.setSelectedIndex(0);
@@ -187,17 +183,16 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 	 */
 	public void ajoutLivre() {
 		try {
-			ResultSet max = Connexion.executeQuery("SELECT MAX(id_liv) FROM livre");
-			int index = max.getInt(1) + 1;
-			Connexion.executeUpdate("INSERT into livre values(" + index + ",'" + titreField.getText() + "','" + auteurField.getText() + "')");
-			max = Connexion.executeQuery("SELECT MAX(id_ex) FROM exemplaire");
-			int indexEx = max.getInt(1)+1;
-			for(int i=0; i<(int)exemplaireField.getValue();i++) {
-				Connexion.executeUpdate("INSERT into exemplaire values(" + indexEx + "," + index + ")");
-				indexEx++;
+			Connexion.executeUpdate("INSERT into livre(titre, auteur) values(?, ?)", new String[] {titreField.getText(), auteurField.getText()});
+			ResultSet max = Connexion.executeQuery("SELECT MAX(id_ex) FROM livre");
+			if (max.next()) {
+				int id_liv = max.getInt(1)+1;
+				for(int i=0; i<(int)exemplaireField.getValue();i++) {
+					Connexion.executeUpdate("INSERT into exemplaire(id_liv) values(?)", new String[] { String.valueOf(id_liv) });
+				}
 			}
-		}catch(SQLException e) {
-			System.out.println(e);	
+			max.close();
+		}catch(Exception e) {
 		}
 		
 		exemplaireField.setValue(1);
@@ -223,12 +218,12 @@ public class PopupAjoutLivre extends JDialog implements ActionListener{
 		ArrayList<ComboBoxLivre> livres = new ArrayList<ComboBoxLivre>();
 
 		try {
-			ResultSet result = Connexion.executeQuery("SELECT titre,id_liv FROM Livre order by titre asc");
-			while(result.next()) {
-				ComboBoxLivre element = new ComboBoxLivre(result.getString(1),result.getInt(2));
+			ResultSet rset = Connexion.executeQuery("SELECT titre,id_liv FROM Livre order by titre asc");
+			while(rset.next()) {
+				ComboBoxLivre element = new ComboBoxLivre(rset.getString(1),rset.getInt(2));
 				livres.add(element);
 			}
-
+			rset.close();
 		}catch(SQLException e) {
 			System.out.println(e);	
 		}

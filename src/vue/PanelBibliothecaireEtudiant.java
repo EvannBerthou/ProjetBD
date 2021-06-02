@@ -49,15 +49,16 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private Etudiant[] getEtudiants() {
         ArrayList<Etudiant> etus = new ArrayList<Etudiant>();
-        ResultSet result = null;
+        ResultSet rset = null;
         try {
-            result = Connexion.executeQuery("SELECT nom,prenom,email FROM etu");
-            while (result.next()) {
-                String nom = result.getString(1);
-                String prenom = result.getString(2);
-                String email = result.getString(3);
+        	rset = Connexion.executeQuery("SELECT nom,prenom,email FROM etu");
+            while (rset.next()) {
+                String nom = rset.getString(1);
+                String prenom = rset.getString(2);
+                String email = rset.getString(3);
                 etus.add(new Etudiant(nom, prenom, email));
             }
+            rset.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return new Etudiant[0];
@@ -91,13 +92,13 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         });
 
         JScrollPane scrollListeEtudiants = new JScrollPane(listeEtudiants);
-        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste √©tudiants", "letu", this), BorderLayout.NORTH);
+        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste Ètudiants", "letu", this), BorderLayout.NORTH);
         panelListeEtudiants.add(scrollListeEtudiants, BorderLayout.CENTER);
         
         // Panel CENTRE (informations de l'√©tudiants s√©lectionn√©)
         JPanel infos = new JPanel();
         infos.add(textFieldWithName("Nom"));
-        infos.add(textFieldWithName("Pr√©nom"));
+        infos.add(textFieldWithName("PrÈnom"));
         infos.add(textFieldWithName("Email"));
         infos.add(textFieldWithName("Mdp"));
         JButton enrengistrerButton = new JButton("Enrengister");
@@ -123,7 +124,6 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         add(panelInfoEtudiant, BorderLayout.CENTER);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {       
         String action = e.getActionCommand();
         switch (action) {
@@ -147,14 +147,14 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
                     }
             );
             return true;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             return false;
         }
     }
     
     private void changerEtudiantSelectionne(Etudiant etu) {
         textFields.get("Nom").setText(etu.getNom());
-        textFields.get("Pr√©nom").setText(etu.getPrenom());
+        textFields.get("PrÈnom").setText(etu.getPrenom());
         textFields.get("Email").setText(etu.getEmail());
         etuSelectionne = etu;
         mettreAJourLivres();
@@ -168,7 +168,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         try {
             Connexion.executeUpdate("UPDATE etu SET nom = ?, prenom = ?, email = ? WHERE email = ?", new String[] {
                     textFields.get("Nom").getText(),
-                    textFields.get("Pr√©nom").getText(),
+                    textFields.get("PrÈnom").getText(),
                     textFields.get("Email").getText(),
                     getEtuSelectionne().getEmail()
             });
@@ -181,7 +181,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
             }
             
             mettreAJourListeEtudiants();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -228,6 +228,8 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
+        if (livre == null) return;
+        
         LivresEtudiants.supprimerReservation(getEtuSelectionne(), String.valueOf(livre.getId()));
         mettreAJourLivres();
     }
