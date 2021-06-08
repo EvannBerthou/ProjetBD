@@ -15,7 +15,11 @@ import javax.swing.JTextField;
 
 import modele.Connexion;
 import modele.Etudiant;
-
+/**
+ * 
+ * @author Benjamin
+ *
+ */
 public class ConnexionEtudiant extends JPanel implements ActionListener {
 
     Client client;

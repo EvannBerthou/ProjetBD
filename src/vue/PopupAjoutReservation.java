@@ -10,12 +10,27 @@ import modele.ModeleTableLivres;
 import modele.UpdateListe;
 import utils.LivresEtudiants;
 
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class PopupAjoutReservation extends PopupLivreEtudiant {
 
+	/**
+	 * panel bibliothécaire 
+	 */
 	PanelBibliothecaireEtudiant pbe = null;
+	/**
+	 * étudiant 
+	 */
 	Etudiant etu;
 	UpdateListe parent;
 	
+	/**
+	 * initialisation du panel ajout reservation
+	 * @param _pbe panel de la bibliothécaire 
+	 */
 	public PopupAjoutReservation(PanelBibliothecaireEtudiant _pbe) {
 		super(_pbe.getEtuSelectionne());
 		this.pbe = _pbe;
@@ -26,6 +41,11 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
 		}
 	}
 	
+	/**
+	 * initialisation du panel ajout de reservation 
+	 * @param _etu étudiant
+	 * @param _panel panel 
+	 */
 	public PopupAjoutReservation(Etudiant _etu, UpdateListe _panel) {
         super(_etu);
         this.etu = _etu;
@@ -33,6 +53,10 @@ public class PopupAjoutReservation extends PopupLivreEtudiant {
         setTitle("Ajout reservation pour " + etu.toString());
     }
 
+	/**
+	 * gestion des evenement 
+	 * @param e evenement 
+	 */
 	public void actionPerformed(ActionEvent e) {
 	    if (e.getSource() == rechercheBouton) {
 	        tableLivres.setModel(new ModeleTableLivres(true, tfTitre.getText(), tfAuteur.getText()));

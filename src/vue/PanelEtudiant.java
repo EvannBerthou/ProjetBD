@@ -18,17 +18,41 @@ import modele.LivreRenderer;
 import modele.UpdateListe;
 import utils.LivresEtudiants;
 
+/**
+ * 
+ * @author Benjamin
+ *
+ */
 public class PanelEtudiant extends JPanel implements ActionListener, UpdateListe {
     private static final long serialVersionUID = -2386593521069160406L;
 
+    /**
+     * Jbutton de reservation
+     */
     JButton reserverBouton = new JButton("Réserver un livre");; 
-    JButton supprimerBouton = new JButton("Supprimer réservation"); 
+    /**
+     * Jbuton de suppression de réservation 
+     */
+    JButton supprimerBouton = new JButton("Supprimer réservation");
+    /**
+     * étudiant connecté
+     */
     Etudiant etu;
     
-    
+    /**
+     * liste des emprunt de l'étudiant 
+     */
     JList<Livre> listeEmprunts = new JList<Livre>();
+    /**
+     * Liste des réservation de l'étudiant
+     */
     JList<Livre> listeReservations = new JList<Livre>();
 
+    
+    /**
+     * initialisation du panel etudiant 
+     * @param _etu étudiant connécté
+     */
     public PanelEtudiant(Etudiant _etu) {
         this.etu = _etu;
         setLayout(new GridLayout(1,2));
@@ -59,6 +83,9 @@ public class PanelEtudiant extends JPanel implements ActionListener, UpdateListe
         add (panelReservation);
     }
 
+    /**
+     * mise a jour de l'affichage des livres 
+     */
     public void mettreAJourLivres() {
         Livre[] emprunts = LivresEtudiants.getLivresEmpruntEtudiants(etu);
         Livre[] reservations = LivresEtudiants.getLivresReserveEtudiants(etu);
@@ -78,6 +105,10 @@ public class PanelEtudiant extends JPanel implements ActionListener, UpdateListe
         listeReservations.setModel(model);
     }
 
+    /**
+     * gestion des evenement 
+     * @param e evenement 
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == reserverBouton) {

@@ -8,9 +8,17 @@ import modele.Connexion;
 import modele.Etudiant;
 import modele.Livre;
 import vue.PopupChoixExemplaire;
-
+/**
+ * 
+ * @author Evann,Benjamin
+ *
+ */
 public class LivresEtudiants {
-
+    /**
+     * retourne les livre emprunter par l'étudiant 
+     * @param etu étdudiant
+     * @return liste de livre emprunté
+     */
     public static Livre[] getLivresEmpruntEtudiants(Etudiant etu) {
         ResultSet rset; 
         try {
@@ -36,6 +44,11 @@ public class LivresEtudiants {
         return new Livre[0];
     }
     
+    /**
+     * retourn les livres reservé par l'édtudiant 
+     * @param etu étudiant
+     * @return liste des livre emprunté par l'etudiant
+     */
     public static Livre[] getLivresReserveEtudiants(Etudiant etu) {
         ResultSet rset; 
         try {
@@ -64,6 +77,11 @@ public class LivresEtudiants {
         return new Livre[0];
     }
 
+    /**
+     * retourne le nombre de livres emprunté par l'etudiant 
+     * @param etu étudiant 
+     * @return nombre de livres emprunté par l'étudiant 
+     */
     private static int nbLivreEmprunte(Etudiant etu) {
         try {
             ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?)", new String[] {etu.getEmail()});
@@ -78,6 +96,12 @@ public class LivresEtudiants {
         return 0;
     }
     
+    /**
+     * verifi si l'étudiant peut emprunter un livre 
+     * @param etu étudiant 
+     * @param id_ex identifiant de l'exemplaire
+     * @return retourne un boolean 
+     */
     public static boolean EmprunterLivre(Etudiant etu, String id_ex) {
         int livresEmpruntes = nbLivreEmprunte(etu);
         if (livresEmpruntes >= 5) {
@@ -95,13 +119,18 @@ public class LivresEtudiants {
         return true;
     }
     
+    /**
+     * retourne le nombre de livre reserver par l'étudiant 
+     * @param etu édtudiant 
+     * @return retourne un int pour le nombre de livres réservé par l'étudiant 
+     */
     private static int nbLivreReserve(Etudiant etu) {
         try {
             ResultSet rset = Connexion.executeQuery("SELECT COUNT(*) FROM reserv "
                     + "WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) ",
                     new String[] {etu.getEmail()});
             if (rset.next()) {
-            	int res = rset.getInt(1);
+                int res = rset.getInt(1);
                 rset.close();
                 return res;
             }
@@ -112,6 +141,12 @@ public class LivresEtudiants {
         return 0;
     }
     
+    /**
+     * indique si un étudiant peut résever un livre 
+     * @param etu étudiant 
+     * @param id_liv identifiant du livre
+     * @return retourn un boolean 
+     */
     public static boolean ReserverLivre(Etudiant etu, String id_liv) {
         int livresEmpruntes = nbLivreReserve(etu);
         if (livresEmpruntes >= 5) {
@@ -123,7 +158,7 @@ public class LivresEtudiants {
                     new String[] { etu.getEmail() });
             while (rset.next()) {
                 if (rset.getString(1).equals(id_liv)) {
-                	rset.close();
+                    rset.close();
                     return false;
                 }
             }
@@ -139,6 +174,11 @@ public class LivresEtudiants {
         return true;
     }
     
+    /**
+     * supprime un emprunt
+     * @param etu étudiant 
+     * @param exemplaire exemplaire supprimer de la liste des emprunts
+     */
     public static void supprimerEmprunt(Etudiant etu, int exemplaire) {
         try {
             Connexion.executeUpdate("DELETE FROM emprunt WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) AND id_ex = ?",
@@ -150,6 +190,11 @@ public class LivresEtudiants {
         }
     }
     
+    /**
+     * supprime une reservation
+     * @param etu étudiant 
+     * @param id identifiant 
+     */
     public static void supprimerReservation(Etudiant etu, String id) {
         try {
             Connexion.executeUpdate("DELETE FROM reserv WHERE id_et = (SELECT id_et FROM etu WHERE email = ?) "
@@ -158,6 +203,11 @@ public class LivresEtudiants {
         }
     }
 
+    /**
+     * modifi la date de retour 15 jour apres la precedente  
+     * @param etu étudiant 
+     * @param livre livre 
+     */
     public static void relancerLivre(Etudiant etu, Livre livre) {
         try {
             Connexion.executeUpdate("UPDATE emprunt SET date_retour = "

@@ -8,6 +8,11 @@ import javax.swing.table.DefaultTableModel;
 
 import constante.IdConnexion;
 
+/**
+ * 
+ * @author Jules
+ *
+ */
 public class ModeleTableRetard extends DefaultTableModel{
 	/**
 	 * nombre de colonne initial
@@ -53,7 +58,7 @@ public class ModeleTableRetard extends DefaultTableModel{
 	}
 
 	
-	/** Methode pour changer toute les lignes, chaque liste doivent faire la m�me tailles, sinon les �l�ments de trop ne seront pas afficher
+	/** Methode pour changer toute les lignes, chaque liste doivent faire la mï¿½me tailles, sinon les ï¿½lï¿½ments de trop ne seront pas afficher
 	 * 
 	 * @param parTitres Liste des titres
 	 * @param parEtudiant Liste des etudiant
@@ -76,7 +81,7 @@ public class ModeleTableRetard extends DefaultTableModel{
 	}
 	
 	/**
-	 * Methode pour rendre les cellules in�ditable
+	 * Methode pour rendre les cellules inï¿½ditable
 	 */
 	public boolean isCellEditable(int row, int column) {
 		return false;

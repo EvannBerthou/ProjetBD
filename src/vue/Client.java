@@ -7,10 +7,20 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 
 import modele.Connexion;
-
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class Client extends JFrame {
 	private static final long serialVersionUID = -978164249698330936L;
 	
+	/**
+	 * initialisation d'un nouveau client 
+	 * @throws ClassNotFoundException gestion d'excepetion
+	 * @throws SQLException gestion d'excepetion SQL
+	 * @throws IOException gestion d'excepetion
+	 */
 	public Client() throws ClassNotFoundException, SQLException, IOException {
 		super("Titre");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -24,6 +34,7 @@ public class Client extends JFrame {
 		setVisible(true);
         setSize(400, 200);
 	}
+	
 	
 	public static void main (String args []) throws SQLException, ClassNotFoundException, IOException {
 		new Client();

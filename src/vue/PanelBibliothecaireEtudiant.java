@@ -27,11 +27,32 @@ import modele.UpdateListe;
 import utils.Bouton;
 import utils.LivresEtudiants;
 
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class PanelBibliothecaireEtudiant extends JPanel implements ActionListener, UpdateListe {    
+    /**
+     * hashmap de stokage des JTextFied 
+     */
     HashMap<String, JTextField> textFields = new HashMap<String, JTextField>();
+    
+    /**
+     * etudiant selectione
+     */
     Etudiant etuSelectionne;
+    /**
+     * liste d'etudiants
+     */
     JList<Etudiant> listeEtudiants;
+    /**
+     * liste des emprunts 
+     */
     JList<Livre> listeEmprunts;
+    /**
+     * liste des reservation
+     */
     JList<Livre> listeReservations;
     /**
      * Permet de créer un couple JTextField avec un nom au dessus
@@ -47,11 +68,15 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         return panel;
     }
     
+    /**
+     * 
+     * @return liste d'étudiants
+     */
     private Etudiant[] getEtudiants() {
         ArrayList<Etudiant> etus = new ArrayList<Etudiant>();
         ResultSet rset = null;
         try {
-        	rset = Connexion.executeQuery("SELECT nom,prenom,email FROM etu");
+            rset = Connexion.executeQuery("SELECT nom,prenom,email FROM etu");
             while (rset.next()) {
                 String nom = rset.getString(1);
                 String prenom = rset.getString(2);
@@ -67,12 +92,16 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         return (Etudiant[]) etus.toArray(new Etudiant[etus.size()]);
     }
     
+    /**
+     *  
+     *  initialisation du panel de la bibliotécaire 
+     */
     public PanelBibliothecaireEtudiant() {
         setLayout(new BorderLayout(20, 20));
         JPanel panelListeEtudiants = new JPanel(new BorderLayout());
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
-        // Panel WEST (liste des Ã©tudiants)
+        // Panel WEST (liste des étudiants)
         listeEtudiants = new JList<Etudiant>();
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
@@ -138,6 +167,11 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
+    /**
+     * methode prenant en charge l'ajout d'étudiants dans la base de donné
+     * @param etu etudiant a ajouté
+     * @return retourne un boolean indiquant la bonne resuite de la commande 
+     */
     boolean ajouterEtudiant(Etudiant etu) {
         System.out.println("Ajout de " + etu.toString());
         try {
@@ -152,6 +186,10 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
+    /**
+     * changement d'étudiant sélectioné
+     * @param etu nouvel etudiant a afficher
+     */
     private void changerEtudiantSelectionne(Etudiant etu) {
         textFields.get("Nom").setText(etu.getNom());
         textFields.get("Prénom").setText(etu.getPrenom());
@@ -160,6 +198,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         mettreAJourLivres();
     }
     
+    /**
+     * chagement des information de l'étudiant prenom, nom, email, mot de passe
+     */
     private void changerInformationsEtudiant() {
         if (getEtuSelectionne() == null) {
             return;
@@ -186,6 +227,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         }
     }
     
+    /**
+     * mise a jout des livres à afficher
+     */
     public void mettreAJourLivres() {
         if (getEtuSelectionne() == null) {
             listeEmprunts.setModel(new DefaultListModel<Livre>());
@@ -209,6 +253,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         listeReservations.setModel(model);
     }
     
+    /**
+     * mise a jour des livre à ajouter coté étudiant 
+     */
     void mettreAJourListeEtudiants() {        
         int index = listeEtudiants.getSelectedIndex();
         DefaultListModel<Etudiant> model = new DefaultListModel<Etudiant>();
@@ -220,12 +267,18 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         listeEtudiants.setSelectedIndex(index);
     }
     
+    /**
+     * suppression d'un emprunt
+     */
     private void supprimerEmprunt() {
         Livre livre = listeEmprunts.getSelectedValue();
         LivresEtudiants.supprimerEmprunt(getEtuSelectionne(), livre.getExemplaire());
         mettreAJourLivres();
     }
     
+    /**
+     * suppression d'une réservaion 
+     */
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
         if (livre == null) return;
@@ -234,6 +287,9 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         mettreAJourLivres();
     }
     
+    /**
+     * suppression d'un étudiant  
+     */
     private void supprimerEtudiant() {
         if (getEtuSelectionne() == null) {
             return;
@@ -244,10 +300,14 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         mettreAJourLivres();
         
         textFields.get("Nom").setText("");
-        textFields.get("Prénom").setText("");
+        textFields.get("PrÃ©nom").setText("");
         textFields.get("Email").setText("");
     }
     
+    
+    /**
+     * relance l'étudiant en cas de retard 
+     */
     private void relancerLivre() {
         Livre livre = listeEmprunts.getSelectedValue();
         if (livre == null) return;

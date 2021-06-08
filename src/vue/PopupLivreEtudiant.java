@@ -15,14 +15,34 @@ import javax.swing.ScrollPaneConstants;
 
 import modele.Etudiant;
 import modele.ModeleTableLivres;
-
+/**
+ * 
+ * @author Benjamin
+ *
+ */
 public abstract class PopupLivreEtudiant extends JDialog implements ActionListener {
     
+    /**
+     * Jtable de livres
+     */
     JTable tableLivres;
+    /**
+     * bouton de recherche 
+     */
     JButton rechercheBouton = new JButton("Rechercher");
+    /**
+     * Jtextfield du titre du livre 
+     */
     JTextField tfTitre = new JTextField(10);
+    /**
+     * Jtestfield de l'autreur du livre 
+     */
     JTextField tfAuteur = new JTextField(10);
     
+    /**
+     * initialisation du panel étudiant 
+     * @param etu etudiant connecté
+     */
     public PopupLivreEtudiant(Etudiant etu) {
         if (etu == null) {
             JOptionPane.showMessageDialog(null, "Aucun étudiant sélectionné.", "Erreur", JOptionPane.INFORMATION_MESSAGE);

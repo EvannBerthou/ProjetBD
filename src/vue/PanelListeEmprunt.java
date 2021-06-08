@@ -12,8 +12,18 @@ import javax.swing.JScrollPane;
 import modele.Livre;
 import utils.Bouton;
 
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class PanelListeEmprunt extends JPanel {
 
+    /**
+     * initialisation du panel de la liste des emprunt 
+     * @param listeEmprunts des étudiants
+     * @param listener gestion d'évenement 
+     */
     public PanelListeEmprunt(JList listeEmprunts, ActionListener listener) {
         setLayout(new BorderLayout());
         JScrollPane scrollEmprunts = new JScrollPane(listeEmprunts);

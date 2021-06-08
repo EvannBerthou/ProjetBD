@@ -19,11 +19,22 @@ import modele.JTableLivre;
 import modele.Livre;
 import modele.ModeleTableLivres;
 import utils.LivresEtudiants;
-
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class PopupAjoutEmprunt extends PopupLivreEtudiant {
 
+    /**
+     * panel de la Bibliothécaire
+     */
     PanelBibliothecaireEtudiant pbe;
 
+    /**
+     * initialisation du panel pour ajouter un emprunt 
+     * @param _pbe panel de la bibliothecaire 
+     */
     public PopupAjoutEmprunt(PanelBibliothecaireEtudiant _pbe) {
         super(_pbe.getEtuSelectionne());
         this.pbe = _pbe;
@@ -33,6 +44,10 @@ public class PopupAjoutEmprunt extends PopupLivreEtudiant {
         }
     }
 
+    /**
+     * gestion des evenement 
+     * @param e evenement 
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == rechercheBouton) {
             tableLivres.setModel(new ModeleTableLivres(true, tfTitre.getText(), tfAuteur.getText()));

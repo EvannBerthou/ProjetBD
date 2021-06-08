@@ -17,6 +17,9 @@ import javax.swing.ScrollPaneConstants;
 import modele.Connexion;
 import modele.ModeleTableExemplaires;
 
+/**
+ * @author Jules 
+ */
 public class PopupSupprExemplaire extends JDialog implements ActionListener {
 
 	/**

@@ -10,7 +10,7 @@ import javax.swing.table.*;
 import constante.IdConnexion;
 import modele.Livre;
 
-/** Classe pour d�finir le style de la table du panelLivres
+/** Classe pour définir le style de la table du panelLivres
  * 
  * @author jules
  *

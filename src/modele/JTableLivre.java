@@ -1,5 +1,9 @@
 package modele;
 
+/**
+ *  
+ * @author Evann 
+ */
 public class JTableLivre {
 	
 	/**

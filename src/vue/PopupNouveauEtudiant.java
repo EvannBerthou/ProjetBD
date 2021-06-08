@@ -11,18 +11,47 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import modele.Etudiant;
-
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class PopupNouveauEtudiant extends JDialog implements ActionListener {
 
+    /**
+     * textfield nom du nouvel étudiant 
+     */
     JTextField tfNom = new JTextField(10);
+    /**
+     * textfield prenom du nouvel étudiant
+     */
     JTextField tfPrenom = new JTextField(10);
+    /**
+     * textfield mail du nouvel étudiant 
+     */
     JTextField tfMail = new JTextField(10);
+    /**
+     * textfied mot de passe du nouvel étudiant 
+     */
     JTextField tfMdp = new JTextField(10);
+    /**
+     * bouton d'ajout du nouvel étudiant 
+     */
     JButton ajouterBouton = new JButton("Ajouter");
+    /**
+     * bouton d'annulation 
+     */
     JButton annulerBouton = new JButton("Annuler");
 
+    /**
+     * panel de la bibliothécaire 
+     */
     PanelBibliothecaireEtudiant pbe;
     
+    /**
+     * initialisation du panel pour un nouvel étudiant 
+     * @param _pbe
+     */
     public PopupNouveauEtudiant(PanelBibliothecaireEtudiant _pbe) {
         this.pbe = _pbe;
         setTitle("Ajout d'un Ã©tudiant");
@@ -51,7 +80,10 @@ public class PopupNouveauEtudiant extends JDialog implements ActionListener {
         setBackground(java.awt.Color.red);
         setSize(300, 150);
     }
-
+    /**
+     * retourne un nouvel étudiant 
+     * @return etudiant 
+     */
     public Etudiant getEtudiant() {
         String nom = tfNom.getText();
         String prenom = tfPrenom.getText();
@@ -65,6 +97,10 @@ public class PopupNouveauEtudiant extends JDialog implements ActionListener {
         return etu;
     }
 
+    /**
+     * gestion des evenement 
+     * @param e evenement 
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == ajouterBouton) {

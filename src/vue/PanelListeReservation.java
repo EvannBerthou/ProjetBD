@@ -11,8 +11,18 @@ import javax.swing.JScrollPane;
 import modele.Livre;
 import utils.Bouton;
 
+/**
+ * 
+ * @author Evann 
+ *
+ */
 public class PanelListeReservation extends JPanel {
 
+    /**
+     * initisalition du panel liste reservation
+     * @param listeReservations liste des reservation 
+     * @param listener gestion d'evenement 
+     */
     public PanelListeReservation(JList listeReservations, ActionListener listener) {
         setLayout(new BorderLayout());
         JScrollPane scrollReservations = new JScrollPane(listeReservations);

@@ -1,5 +1,10 @@
 package constante;
 
+/**
+ * 
+ * @author Evann
+ *
+ */
 public interface IdConnexion {
 	final String username = "";
 	final String mdp = "";

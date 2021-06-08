@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * 
+ * @author Evann
+ *
+ */
 public class ModeleTableExemplaires extends DefaultTableModel {
     int nCol = 3; 
     int nRow = 20;
