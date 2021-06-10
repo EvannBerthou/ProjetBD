@@ -17,6 +17,7 @@ public class ModeleTableExemplaires extends DefaultTableModel {
     
     /**
      * Constructeur de la classe
+     * @param id_liv Le livre dont on doit afficher les informations
      */
     public ModeleTableExemplaires(String id_liv) {
         setColumnCount(nCol);

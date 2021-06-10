@@ -22,7 +22,6 @@ public class Client extends JFrame {
 	 * @throws IOException gestion d'excepetion
 	 */
 	public Client() throws ClassNotFoundException, SQLException, IOException {
-		super("Titre");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		new Connexion("jdbc:oracle:thin:@madere:1521:info", "eberthou", "azerty");
 		//new Connexion("jdbc:sqlite:sample.db", "eberthou", "azerty");

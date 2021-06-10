@@ -50,17 +50,17 @@ public class PopupNouveauEtudiant extends JDialog implements ActionListener {
     
     /**
      * initialisation du panel pour un nouvel étudiant 
-     * @param _pbe
+     * @param _pbe Le panel de la bibliothécaire
      */
     public PopupNouveauEtudiant(PanelBibliothecaireEtudiant _pbe) {
         this.pbe = _pbe;
-        setTitle("Ajout d'un Ã©tudiant");
+        setTitle("Ajout d'un étudiant");
 
         setLayout(new GridLayout(5, 2));
         add(new JLabel("Nom"));
         add(tfNom);
 
-        add(new JLabel("PrÃ©nom"));
+        add(new JLabel("Prénom"));
         new JTextField(10);
         add(tfPrenom);
 

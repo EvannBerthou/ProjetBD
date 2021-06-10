@@ -49,6 +49,7 @@ public class ConnexionEtudiant extends JPanel implements ActionListener {
 
     /**
      * methode d'initialisation du panel de connexion
+     * @param _client La fenêtre de connexion
      */
     public ConnexionEtudiant (Client _client){
         this.client = _client;

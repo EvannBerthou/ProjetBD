@@ -103,7 +103,7 @@ public class Livre {
     /**
      * retourne le nombre d'exemplaire d'un meme livre 
      * @param livId idetifiant du livre 
-     * @param exclureEmprunts 
+     * @param exclureEmprunts doit-on exclure les livres empruntés dans le compte des exemplaires ?
      * @return int le nombre d'exemplaire du livre 
      */
     public static int nbExemplaire(String livId, boolean exclureEmprunts) {

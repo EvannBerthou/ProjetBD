@@ -33,7 +33,7 @@ public class Connexion {
 	 * @param username nom du proprietaire de la base de donné
 	 * @param password mot de passe pour acceder a la session du propriétaire
 	 * @throws SQLException exception lors de l'execution de commande SQL
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException exepcetion
 	 */
 	public Connexion(String addresse, String username, String password) throws SQLException, ClassNotFoundException{
 		if (conn == null || conn.isClosed()) {

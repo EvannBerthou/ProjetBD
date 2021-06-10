@@ -21,6 +21,7 @@ public class ModeleTableLivres extends DefaultTableModel{
 	
 	/**
 	 * Constructeur de la classe
+	 * @param exclureEmprunte Doit-on exclure les livres empruntés ?
 	 */
 	public ModeleTableLivres(boolean exclureEmprunte) {
 		setColumnCount(nCol);

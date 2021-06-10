@@ -82,14 +82,6 @@ public class PanelLivres extends JPanel implements ActionListener{
 		cRecherche.anchor = GridBagConstraints.WEST;
 		recherche.add(titreField,cRecherche);
 		
-		JButton titreRecherche = new JButton("Rechercher");
-		cRecherche.gridx = 2;
-		cRecherche.gridy = 1;
-		cRecherche.anchor = GridBagConstraints.WEST;
-		titreRecherche.setActionCommand("rchrTitre");
-		titreRecherche.addActionListener(this);
-		recherche.add(titreRecherche,cRecherche);
-		
 		JLabel auteur = new JLabel("Auteur ");
 		cRecherche.gridx = 3;
 		cRecherche.gridy = 0;
@@ -105,8 +97,8 @@ public class PanelLivres extends JPanel implements ActionListener{
 		JButton auteurRecherche = new JButton("Rechercher");
 		cRecherche.gridx = 4;
 		cRecherche.gridy = 1;
-		cRecherche.anchor = GridBagConstraints.WEST;
-		auteurRecherche.setActionCommand("rchrAuteur");
+		cRecherche.anchor = GridBagConstraints.EAST;
+		auteurRecherche.setActionCommand("rchr");
 		auteurRecherche.addActionListener(this);
 		recherche.add(auteurRecherche,cRecherche);
 		
@@ -206,49 +198,15 @@ public class PanelLivres extends JPanel implements ActionListener{
 	}
 	
 	/**
-	 * Methode qui met a jour la liste de livre en fonction de la recherche par titre
-	 */
-	public void rechercheTitre() {
-		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
-		ArrayList<String> arrayAuteurs = new ArrayList<String>();
-		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
-		
-		try {
-			ResultSet rset = Connexion.executeQuery("SELECT * FROM Livre WHERE lower(titre) LIKE lower(?) ORDER BY titre ASC", new String[] { "%" + titreField.getText() + "%"});
-			while(rset.next()) {
-				arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
-				arrayAuteurs.add(rset.getString(3));
-			}
-			rset.close();
-			for (JTableLivre livre : arrayTitres) {
-				ResultSet exmplaire = Connexion.executeQuery("SELECT count(id_ex) FROM exemplaire WHERE id_liv = ? ", new String[] { String.valueOf(livre.getId()) });
-				if (exmplaire.next()) {
-					arrayExemplaire.add(exmplaire.getInt(1));
-				}
-				exmplaire.close();
-			}
-		}catch(SQLException e) {
-			System.out.println(e);	
-		}
-		
-		JTableLivre[] titres = arrayTitres.toArray(new JTableLivre[0]);
-		String[] auteurs = arrayAuteurs.toArray(new String[0]);
-		Integer[] exemplaire = arrayExemplaire.toArray(new Integer[0]);
-		modeleLivre.setAllValue(titres,auteurs,exemplaire);
-		
-		titreField.setText("");
-	}
-	
-	/**
 	 * Methode qui met a jour la liste de livre en fonction de la recherche par auteur
 	 */
-	public void rechercheAuteur() {
+	public void recherche() {
 		ArrayList<JTableLivre> arrayTitres = new ArrayList<JTableLivre>();
 		ArrayList<String> arrayAuteurs = new ArrayList<String>();
 		ArrayList<Integer> arrayExemplaire = new ArrayList<Integer>();
 		
 		try {
-			ResultSet rset = Connexion.executeQuery("SELECT * FROM Livre WHERE lower(auteur) LIKE lower(?) ORDER BY titre ASC", new String[] { "%" + auteurField.getText() + "%"});
+			ResultSet rset = Connexion.executeQuery("SELECT * FROM Livre WHERE lower(auteur) LIKE lower(?) AND lower(titre) LIKE lower(?) ORDER BY titre ASC", new String[] { "%" + auteurField.getText() + "%", "%" + titreField.getText() + "%"});
 			while(rset.next()) {
 				arrayTitres.add(new JTableLivre(rset.getInt(1),rset.getString(2)));
 				arrayAuteurs.add(rset.getString(3));
@@ -271,6 +229,7 @@ public class PanelLivres extends JPanel implements ActionListener{
 		modeleLivre.setAllValue(titres,auteurs,exemplaire);
 
 		auteurField.setText("");
+		titreField.setText("");
 	}
 	
 	/**
@@ -316,8 +275,7 @@ public class PanelLivres extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
 		switch (action) {
-		case "rchrTitre": rechercheTitre(); break;
-		case "rchrAuteur": rechercheAuteur(); break;
+		case "rchr": recherche(); break;
 		case "lvrRetard": panelLivreRetard(); break;
 		case "ajLivre": panelAjoutLivres(); break;
 		case "supLivre": suppimerLivre(); break;

@@ -55,7 +55,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
      */
     JList<Livre> listeReservations;
     /**
-     * Permet de crÃ©er un couple JTextField avec un nom au dessus
+     * Permet de créer un couple JTextField avec un nom au dessus
      * @param name Le texte a afficher au dessus du JLabel
      * @return Un JPanel avec un JLabel et un JTextField
      */
@@ -70,7 +70,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     /**
      * 
-     * @return liste d'Ã©tudiants
+     * @return liste d'étudiants
      */
     private Etudiant[] getEtudiants() {
         ArrayList<Etudiant> etus = new ArrayList<Etudiant>();
@@ -94,14 +94,14 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     /**
      *  
-     *  initialisation du panel de la bibliotÃ©caire 
+     *  initialisation du panel de la bibliotécaire 
      */
     public PanelBibliothecaireEtudiant() {
         setLayout(new BorderLayout(20, 20));
         JPanel panelListeEtudiants = new JPanel(new BorderLayout());
         JPanel panelInfoEtudiant = new JPanel(new BorderLayout(20, 20));
         
-        // Panel WEST (liste des Ã©tudiants)
+        // Panel WEST (liste des étudiants)
         listeEtudiants = new JList<Etudiant>();
         listeEtudiants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
@@ -121,13 +121,13 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         });
 
         JScrollPane scrollListeEtudiants = new JScrollPane(listeEtudiants);
-        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste Ã©tudiants", "letu", this), BorderLayout.NORTH);
+        panelListeEtudiants.add(Bouton.JLabelWithButton("Liste étudiants", "letu", this), BorderLayout.NORTH);
         panelListeEtudiants.add(scrollListeEtudiants, BorderLayout.CENTER);
         
-        // Panel CENTRE (informations de l'Ã©tudiants sÃ©lectionnÃ©)
+        // Panel CENTRE (informations de l'étudiants sélectionné)
         JPanel infos = new JPanel();
         infos.add(textFieldWithName("Nom"));
-        infos.add(textFieldWithName("PrÃ©nom"));
+        infos.add(textFieldWithName("Prénom"));
         infos.add(textFieldWithName("Email"));
         infos.add(textFieldWithName("Mdp"));
         JButton enrengistrerButton = new JButton("Enrengister");
@@ -135,7 +135,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         enrengistrerButton.addActionListener(this);
         infos.add(enrengistrerButton);
         
-        // Panels emprunt et panel rÃ©servation
+        // Panels emprunt et panel réservation
         JPanel panel = new JPanel(new GridLayout(1,2, 20, 20));
 
         listeEmprunts = new JList<Livre>();
@@ -168,8 +168,8 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     /**
-     * methode prenant en charge l'ajout d'Ã©tudiants dans la base de donnÃ©
-     * @param etu etudiant a ajoutÃ©
+     * methode prenant en charge l'ajout d'étudiants dans la base de donnée
+     * @param etu etudiant a ajouté
      * @return retourne un boolean indiquant la bonne resuite de la commande 
      */
     boolean ajouterEtudiant(Etudiant etu) {
@@ -187,19 +187,21 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     /**
-     * changement d'Ã©tudiant sÃ©lectionÃ©
-     * @param etu nouvel etudiant a afficher
-     */
+	 * changement d'étudiant sélectioné
+	 * 
+	 * @param etu
+	 *            nouvel etudiant a afficher
+	 */
     private void changerEtudiantSelectionne(Etudiant etu) {
         textFields.get("Nom").setText(etu.getNom());
-        textFields.get("PrÃ©nom").setText(etu.getPrenom());
+        textFields.get("Prénom").setText(etu.getPrenom());
         textFields.get("Email").setText(etu.getEmail());
         etuSelectionne = etu;
         mettreAJourLivres();
     }
     
     /**
-     * chagement des information de l'Ã©tudiant prenom, nom, email, mot de passe
+     * chagement des information de l'étudiant prenom, nom, email, mot de passe
      */
     private void changerInformationsEtudiant() {
         if (getEtuSelectionne() == null) {
@@ -209,7 +211,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
         try {
             Connexion.executeUpdate("UPDATE etu SET nom = ?, prenom = ?, email = ? WHERE email = ?", new String[] {
                     textFields.get("Nom").getText(),
-                    textFields.get("PrÃ©nom").getText(),
+                    textFields.get("Prénom").getText(),
                     textFields.get("Email").getText(),
                     getEtuSelectionne().getEmail()
             });
@@ -254,7 +256,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     /**
-     * mise a jour des livre Ã  ajouter cotÃ© Ã©tudiant 
+     * mise a jour des livre Ã  ajouter coté étudiant 
      */
     void mettreAJourListeEtudiants() {        
         int index = listeEtudiants.getSelectedIndex();
@@ -277,7 +279,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     /**
-     * suppression d'une rÃ©servaion 
+     * suppression d'une réservaion 
      */
     private void supprimerReservation() {
         Livre livre = listeReservations.getSelectedValue();
@@ -288,7 +290,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     }
     
     /**
-     * suppression d'un Ã©tudiant  
+     * suppression d'un étudiant  
      */
     private void supprimerEtudiant() {
         if (getEtuSelectionne() == null) {
@@ -306,7 +308,7 @@ public class PanelBibliothecaireEtudiant extends JPanel implements ActionListene
     
     
     /**
-     * relance l'Ã©tudiant en cas de retard 
+     * relance l'étudiant en cas de retard 
      */
     private void relancerLivre() {
         Livre livre = listeEmprunts.getSelectedValue();
